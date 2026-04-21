@@ -1,0 +1,13 @@
+# Build folders
+bin/
+obj/
+
+# Temporary files
+*.tmp
+*.log
+
+# NuGet
+packages/
+*.nupkg
+project.lock.json
+artifacts/
