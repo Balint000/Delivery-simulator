@@ -1,0 +1,27 @@
+{
+  "cityName": "Demo Város",
+  "nodes": [
+    { "id": 0, "name": "Raktár (Zóna 1)",   "type": "Warehouse",    "zoneId": 1 },
+    { "id": 1, "name": "Északi negyed",      "type": "Delivery",     "zoneId": 1 },
+    { "id": 2, "name": "Belváros",           "type": "Delivery",     "zoneId": 1 },
+    { "id": 3, "name": "Raktár (Zóna 2)",   "type": "Warehouse",    "zoneId": 2 },
+    { "id": 4, "name": "Keleti piac",        "type": "Delivery",     "zoneId": 2 },
+    { "id": 5, "name": "Repülőtér",          "type": "Delivery",     "zoneId": 2 },
+    { "id": 6, "name": "Centrum",            "type": "Junction",     "zoneId": null },
+    { "id": 7, "name": "Déli csomópont",     "type": "Junction",     "zoneId": null }
+  ],
+  "edges": [
+    { "from": 0, "to": 1, "idealTimeMinutes": 5  },
+    { "from": 0, "to": 6, "idealTimeMinutes": 7  },
+    { "from": 1, "to": 2, "idealTimeMinutes": 4  },
+    { "from": 1, "to": 6, "idealTimeMinutes": 6  },
+    { "from": 2, "to": 6, "idealTimeMinutes": 3  },
+    { "from": 3, "to": 4, "idealTimeMinutes": 4  },
+    { "from": 3, "to": 7, "idealTimeMinutes": 5  },
+    { "from": 4, "to": 5, "idealTimeMinutes": 6  },
+    { "from": 4, "to": 7, "idealTimeMinutes": 4  },
+    { "from": 5, "to": 7, "idealTimeMinutes": 7  },
+    { "from": 6, "to": 7, "idealTimeMinutes": 5  },
+    { "from": 6, "to": 3, "idealTimeMinutes": 8  }
+  ]
+}

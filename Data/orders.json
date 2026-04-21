@@ -1,0 +1,18 @@
+[
+  { "id": 1,  "number": "ORD-001", "customer": "Molnár Rita",     "address": "Váci út 10",        "addressNodeId": 1, "zoneId": 1 },
+  { "id": 2,  "number": "ORD-002", "customer": "Kiss Béla",       "address": "Andrássy út 22",    "addressNodeId": 2, "zoneId": 1 },
+  { "id": 3,  "number": "ORD-003", "customer": "Varga Csilla",    "address": "Váci út 34",        "addressNodeId": 1, "zoneId": 1 },
+  { "id": 4,  "number": "ORD-004", "customer": "Fekete Gábor",    "address": "Andrássy út 45",    "addressNodeId": 2, "zoneId": 1 },
+  { "id": 5,  "number": "ORD-005", "customer": "Horváth Anna",    "address": "Váci út 56",        "addressNodeId": 1, "zoneId": 1 },
+  { "id": 6,  "number": "ORD-006", "customer": "Balogh Imre",     "address": "Andrássy út 67",    "addressNodeId": 2, "zoneId": 1 },
+  { "id": 7,  "number": "ORD-007", "customer": "Pintér Mária",    "address": "Váci út 78",        "addressNodeId": 1, "zoneId": 1 },
+  { "id": 8,  "number": "ORD-008", "customer": "Simon Zoltán",    "address": "Andrássy út 89",    "addressNodeId": 2, "zoneId": 1 },
+  { "id": 9,  "number": "ORD-009", "customer": "Takács Judit",    "address": "Thököly út 10",     "addressNodeId": 4, "zoneId": 2 },
+  { "id": 10, "number": "ORD-010", "customer": "Oláh Richárd",    "address": "Repülőtér T2",      "addressNodeId": 5, "zoneId": 2 },
+  { "id": 11, "number": "ORD-011", "customer": "Farkas Petra",    "address": "Thököly út 21",     "addressNodeId": 4, "zoneId": 2 },
+  { "id": 12, "number": "ORD-012", "customer": "Németh Dániel",   "address": "Repülőtér T3",      "addressNodeId": 5, "zoneId": 2 },
+  { "id": 13, "number": "ORD-013", "customer": "Kovács Réka",     "address": "Thököly út 33",     "addressNodeId": 4, "zoneId": 2 },
+  { "id": 14, "number": "ORD-014", "customer": "Bajnok Attila",   "address": "Repülőtér T4",      "addressNodeId": 5, "zoneId": 2 },
+  { "id": 15, "number": "ORD-015", "customer": "Molnár Viktor",   "address": "Thököly út 44",     "addressNodeId": 4, "zoneId": 2 },
+  { "id": 16, "number": "ORD-016", "customer": "Szabo Orsolya",   "address": "Repülőtér T5",      "addressNodeId": 5, "zoneId": 2 }
+]

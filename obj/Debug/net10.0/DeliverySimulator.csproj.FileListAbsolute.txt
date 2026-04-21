@@ -1,0 +1,15 @@
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/bin/Debug/net10.0/DeliverySimulator
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/bin/Debug/net10.0/DeliverySimulator.deps.json
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/bin/Debug/net10.0/DeliverySimulator.runtimeconfig.json
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/bin/Debug/net10.0/DeliverySimulator.dll
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/bin/Debug/net10.0/DeliverySimulator.pdb
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.GeneratedMSBuildEditorConfig.editorconfig
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.AssemblyInfoInputs.cache
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.AssemblyInfo.cs
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.csproj.CoreCompileInputs.cache
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.sourcelink.json
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.dll
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/refint/DeliverySimulator.dll
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.pdb
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/DeliverySimulator.genruntimeconfig.cache
+/run/media/balint/Files 1TB/[01] University/[01] Félévek/2025-2026 H2/Programozás .NET-ben/DeliverySimulator/obj/Debug/net10.0/ref/DeliverySimulator.dll

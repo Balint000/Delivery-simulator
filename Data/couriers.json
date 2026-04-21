@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Kovács János",
+    "currentNodeId": 0,
+    "zoneIds": [1],
+    "maxCapacity": 3
+  },
+  {
+    "id": 2,
+    "name": "Nagy Eszter",
+    "currentNodeId": 3,
+    "zoneIds": [2],
+    "maxCapacity": 3
+  },
+  {
+    "id": 3,
+    "name": "Tóth Péter",
+    "currentNodeId": 0,
+    "zoneIds": [1, 2],
+    "maxCapacity": 2
+  },
+  {
+    "id": 4,
+    "name": "Szabó Anna",
+    "currentNodeId": 3,
+    "zoneIds": [1, 2],
+    "maxCapacity": 2
+  }
+]
