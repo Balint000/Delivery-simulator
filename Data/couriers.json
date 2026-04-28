@@ -26,5 +26,33 @@
     "currentNodeId": 3,
     "zoneIds": [1, 2],
     "maxCapacity": 2
+  },
+  {
+    "id": 5,
+    "name": "Fekete Márton",
+    "currentNodeId": 8,
+    "zoneIds": [3],
+    "maxCapacity": 3
+  },
+  {
+    "id": 6,
+    "name": "Varga Lídia",
+    "currentNodeId": 8,
+    "zoneIds": [2, 3],
+    "maxCapacity": 2
+  },
+  {
+    "id": 7,
+    "name": "Horváth Béla",
+    "currentNodeId": 0,
+    "zoneIds": [1, 3],
+    "maxCapacity": 2
+  },
+  {
+    "id": 8,
+    "name": "Kiss Roland",
+    "currentNodeId": 6,
+    "zoneIds": [1, 2, 3],
+    "maxCapacity": 1
   }
 ]
