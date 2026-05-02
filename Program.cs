@@ -7,13 +7,12 @@ using DeliverySimulator.Services;
 // ══════════════════════════════════════════════════════
 //  PROGRAM.CS  —  belépési pont
 //
-//  Feladata kizárólag:
+//  Feladata:
 //    1. Adatok betöltése (JSON)
 //    2. Service-ek összekapcsolása (wiring)
 //    3. Szimuláció indítása
 //    4. Riportok kiírása
 //
-//  SEMMI üzleti logika nincs itt — az a service-ekben él.
 // ══════════════════════════════════════════════════════
 
 // ── 1. SETUP ─────────────────────────────────────────
@@ -38,21 +37,21 @@ Console.Write("  Nyomj meg egy billentyűt a szimuláció indításához...");
 Console.ResetColor();
 Console.ReadKey(intercept: true);
 
-// ── 2. SERVICE WIRING ────────────────────────────────
-// Objektumok létrehozása és összekapcsolása
+// ── 2. SERVICE PÉLDÁNYOSÍTÁS ────────────────────────────────
+// Objektumok létrehozása és összekapcsolása (SimOrch)
 
 var liveConsole = new LiveConsole();
 
-var greedy       = new GreedyAssignmentService(graph);
-var nn           = new NearestNeighborService(graph);
-var simulation   = new DeliverySimulationService(graph, liveConsole);
+var greedy = new GreedyAssignmentService(graph);
+var nn = new NearestNeighborService(graph);
+var simulation = new DeliverySimulationService(graph, liveConsole);
 var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liveConsole);
 
 // ── 3. SZIMULÁCIÓ ────────────────────────────────────
 
-liveConsole.Init("CSOMAG KÉZBESÍTÉS SZIMULÁCIÓ", couriers.Count);
+liveConsole.Init("Csomag kézbesítés szimuláció", couriers.Count);
 
-// Ctrl+C kezelése: szépen leállítjuk a szimulációt
+// Ctrl+C kezelése: leállítja a teljes folyamatot
 using var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
 

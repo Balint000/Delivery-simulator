@@ -6,11 +6,10 @@ namespace DeliverySimulator.Services;
 // ══════════════════════════════════════════════════════
 //  GREEDY HOZZÁRENDELÉS
 //
-//  Algoritmus: minden rendeléshez a LEGKÖZELEBBI szabad futárt
-//  rendeljük hozzá — Dijkstra-alapú távolsággal.
+//  Algoritmus: minden rendeléshez a legközelebbi szabad futárt
+//  rendeljük hozzá (Dijkstra-alapú távolsággal).
 //
-//  "Greedy" (mohó) = mindig a lokálisan legjobb döntést hozzuk.
-//  Nem optimális globálisan, de gyors és egyszerű.
+//  "Greedy" (mohó) = mindig a lokálisan legjobbat választja.
 // ══════════════════════════════════════════════════════
 
 public class GreedyAssignmentService
@@ -30,13 +29,13 @@ public class GreedyAssignmentService
     /// </summary>
     public Courier? AssignOne(Order order, List<Courier> couriers)
     {
-        Courier? best     = null;
-        int      bestTime = int.MaxValue;
+        Courier? best = null;
+        int bestTime = int.MaxValue;
 
         foreach (var courier in couriers)
         {
             // Szűrés
-            if (!courier.HasRoom)              continue;
+            if (!courier.HasRoom) continue;
             if (!courier.CanServe(order.ZoneId)) continue;
 
             // Dijkstra: futár jelenlegi pozíciója → rendelés célcsúcsa
@@ -46,13 +45,13 @@ public class GreedyAssignmentService
             if (time < bestTime)
             {
                 bestTime = time;
-                best     = courier;
+                best = courier;
             }
         }
 
         if (best != null)
         {
-            order.Status            = OrderStatus.Assigned;
+            order.Status = OrderStatus.Assigned;
             order.AssignedCourierId = best.Id;
             best.AssignedOrderIds.Add(order.Id);
         }
