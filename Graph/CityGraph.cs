@@ -26,19 +26,19 @@ public class CityGraph
     /// </summary>
     public static CityGraph LoadFromFile(string path)
     {
-        var json   = File.ReadAllText(path);
-        var doc    = JsonDocument.Parse(json);
-        var graph  = new CityGraph();
-        var opts   = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var json = File.ReadAllText(path);
+        var doc = JsonDocument.Parse(json);
+        var graph = new CityGraph();
+        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         // Csúcsok
         foreach (var n in doc.RootElement.GetProperty("nodes").EnumerateArray())
         {
             graph.Nodes.Add(new Node
             {
-                Id     = n.GetProperty("id").GetInt32(),
-                Name   = n.GetProperty("name").GetString()!,
-                Type   = n.GetProperty("type").GetString()!,
+                Id = n.GetProperty("id").GetInt32(),
+                Name = n.GetProperty("name").GetString()!,
+                Type = n.GetProperty("type").GetString()!,
                 ZoneId = n.TryGetProperty("zoneId", out var z) && z.ValueKind != JsonValueKind.Null
                              ? z.GetInt32() : null
             });
@@ -48,11 +48,11 @@ public class CityGraph
         foreach (var e in doc.RootElement.GetProperty("edges").EnumerateArray())
         {
             int from = e.GetProperty("from").GetInt32();
-            int to   = e.GetProperty("to").GetInt32();
-            int min  = e.GetProperty("idealTimeMinutes").GetInt32();
+            int to = e.GetProperty("to").GetInt32();
+            int min = e.GetProperty("idealTimeMinutes").GetInt32();
 
-            graph.Edges.Add(new Edge { From = from, To = to,   IdealMinutes = min });
-            graph.Edges.Add(new Edge { From = to,   To = from, IdealMinutes = min });
+            graph.Edges.Add(new Edge { From = from, To = to, IdealMinutes = min });
+            graph.Edges.Add(new Edge { From = to, To = from, IdealMinutes = min });
         }
 
         return graph;
@@ -73,9 +73,9 @@ public class CityGraph
     public (List<int> path, int totalMinutes) FindShortestPath(int from, int to)
     {
         int n = Nodes.Count;
-        var dist  = new int[n];     // legrövidebb távolság
-        var prev  = new int[n];     // melyik csúcson át értük el
-        var done  = new bool[n];    // feldolgozva?
+        var dist = new int[n];     // legrövidebb távolság
+        var prev = new int[n];     // melyik csúcson át értük el
+        var done = new bool[n];    // feldolgozva?
 
         // 1. Inicializálás
         for (int i = 0; i < n; i++) { dist[i] = int.MaxValue; prev[i] = -1; }
@@ -98,7 +98,7 @@ public class CityGraph
                 if (newDist < dist[edge.To])
                 {
                     dist[edge.To] = newDist;
-                    prev[edge.To]  = u;
+                    prev[edge.To] = u;
                 }
             }
         }
@@ -115,7 +115,7 @@ public class CityGraph
     }
 
     /// <summary>
-    /// Ideális menetidő forgalom NÉLKÜL (összehasonlításhoz, késés-detektáláshoz).
+    /// Ideális menetidő forgalom nélkül (összehasonlításhoz, késés-detektáláshoz).
     /// </summary>
     public int IdealTime(int from, int to)
     {
@@ -138,7 +138,7 @@ public class CityGraph
 
             foreach (var edge in Edges.Where(e => e.From == u))
             {
-                int newDist = dist[u] + edge.IdealMinutes;   // ← IdealMinutes!
+                int newDist = dist[u] + edge.IdealMinutes;   // IdealMinutes
                 if (newDist < dist[edge.To])
                     dist[edge.To] = newDist;
             }
@@ -156,7 +156,7 @@ public class CityGraph
     /// </summary>
     public void UpdateTraffic()
     {
-        // Csak az egy irányú éleket dolgozzuk fel (From < To) hogy ne kettőzzük
+        // Csak az egy irányú éleket dolgozzuk fel (From<To) hogy ne kettőzzük
         var uniqueEdges = Edges.Where(e => e.From < e.To).ToList();
 
         foreach (var edge in uniqueEdges)
@@ -203,7 +203,7 @@ public class CityGraph
                 warehouses = zoneWarehouses;
         }
 
-        int bestId   = warehouses[0].Id;
+        int bestId = warehouses[0].Id;
         int bestTime = int.MaxValue;
 
         foreach (var wh in warehouses)
