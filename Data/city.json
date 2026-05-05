@@ -1,15 +1,15 @@
 {
   "cityName": "Demo Város",
   "nodes": [
-    { "id": 0, "name": "Raktár (Zóna 1)", "type": "Warehouse", "zoneId": 1 },
+    { "id": 0, "name": "Raktár (Z1)", "type": "Warehouse", "zoneId": 1 },
     { "id": 1, "name": "Északi negyed", "type": "Delivery", "zoneId": 1 },
     { "id": 2, "name": "Belváros", "type": "Delivery", "zoneId": 1 },
-    { "id": 3, "name": "Raktár (Zóna 2)", "type": "Warehouse", "zoneId": 2 },
+    { "id": 3, "name": "Raktár (Z2)", "type": "Warehouse", "zoneId": 2 },
     { "id": 4, "name": "Keleti piac", "type": "Delivery", "zoneId": 2 },
     { "id": 5, "name": "Repülőtér", "type": "Delivery", "zoneId": 2 },
     { "id": 6, "name": "Centrum", "type": "Junction", "zoneId": null },
     { "id": 7, "name": "Déli csomópont", "type": "Junction", "zoneId": null },
-    { "id": 8, "name": "Raktár (Zóna 3)", "type": "Warehouse", "zoneId": 3 },
+    { "id": 8, "name": "Raktár (Z3)", "type": "Warehouse", "zoneId": 3 },
     { "id": 9, "name": "Nyugati lakótelep", "type": "Delivery", "zoneId": 3 },
     { "id": 10, "name": "Egyetem negyed", "type": "Delivery", "zoneId": 3 },
     { "id": 11, "name": "Ipari park", "type": "Delivery", "zoneId": 3 },

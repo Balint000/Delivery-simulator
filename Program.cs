@@ -43,14 +43,14 @@ Console.ReadKey(intercept: true);
 
 var liveConsole = new LiveConsole();
 
-var greedy       = new GreedyAssignmentService(graph);
-var nn           = new NearestNeighborService(graph);
-var simulation   = new DeliverySimulationService(graph, liveConsole);
+var greedy = new GreedyAssignmentService(graph);
+var nn = new NearestNeighborService(graph);
+var simulation = new DeliverySimulationService(graph, liveConsole);
 var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liveConsole);
 
 // ── 3. SZIMULÁCIÓ ────────────────────────────────────
 
-liveConsole.Init("CSOMAG KÉZBESÍTÉS SZIMULÁCIÓ", couriers.Count);
+liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count);
 
 // Ctrl+C kezelése: szépen leállítjuk a szimulációt
 using var cts = new CancellationTokenSource();
@@ -95,9 +95,7 @@ static void PrintSetupScreen()
 {
     Console.Clear();
     Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.WriteLine("╔══════════════════════════════════════════════════════╗");
-    Console.WriteLine("║         CSOMAG KÉZBESÍTÉS SZIMULÁTORA                ║");
-    Console.WriteLine("╚══════════════════════════════════════════════════════╝");
+    Console.WriteLine("━━━ Csomag kézbesítés szimuláció ━━━");
     Console.ResetColor();
     Console.WriteLine();
     Console.ForegroundColor = ConsoleColor.DarkYellow;

@@ -88,9 +88,7 @@ public class LiveConsole
 
             // ── Fejléc ──────────────────────────────────
             Write(ConsoleColor.Cyan,
-                "╔══════════════════════════════════════════════════════╗\n" +
-                $"║  🚚 {title,-47}║\n" +
-                "╚══════════════════════════════════════════════════════╝");
+                $"{title}\n");
             Console.WriteLine("\n");
 
             // ── 1. Futárpanel ────────────────────────────
@@ -180,7 +178,7 @@ public class LiveConsole
             string eta = estimatedMin.HasValue ? $"~{estimatedMin}p" : "     ";
 
             // Formázott sor: státusz | név | helyszín | ETA | kézbesítésszám
-            string line = $"  {status,-15} │ {name,-20} │ {loc,-30} │ {eta,-5} │ {completedCount} kézb.";
+            string line = $"  {status,-25} │ {name,-30} │ {loc,-45} │ {eta,-8} │ {completedCount} kézb.";
 
             // courierId 1-től indul, de a panel 0-tól indexelt → ezért (-1)
             int row = _courierPanelRow + (courierId - 1);
@@ -214,7 +212,7 @@ public class LiveConsole
                 "delay" => "⚠️ ",
                 "moving" => "🚗",
                 "pickup" => "📦",
-                "start" => "🚀",
+                "start" => "🟢",
                 "done" => "🏁",
                 "refill" => "📥",
                 _ => "ℹ️ "
@@ -297,10 +295,6 @@ public class LiveConsole
 
     /// <summary>
     /// Egy görgős panel teljes újrarajzolása.
-    ///
-    /// ÚJ SEGÉDMETÓDUS: kiszervezve, mert mind az eseménynapló,
-    /// mind az értesítési panel ugyanúgy működik — ezzel elkerüljük
-    /// a kód ismétlődését (DRY elv).
     ///
     /// Lépések:
     ///   1. Elmenti a kurzor aktuális pozícióját
