@@ -10,7 +10,7 @@ public static class Reports
     public static void PrintDelayReport(List<Order> orders, List<Courier> couriers)
     {
         Console.WriteLine();
-        Header("KÉSÉSI RIPORT");
+        Header("KÉSÉSEK");
 
         var late = orders
             .Where(o => o.WasLate && o.Status == OrderStatus.Delivered)
@@ -18,7 +18,7 @@ public static class Reports
             .ToList();
 
         int delivered = orders.Count(o => o.Status == OrderStatus.Delivered);
-        double rate   = delivered > 0 ? (double)late.Count / delivered * 100 : 0;
+        double rate = delivered > 0 ? (double)late.Count / delivered * 100 : 0;
 
         if (late.Count == 0)
         {
@@ -46,7 +46,7 @@ public static class Reports
     public static void PrintCourierReport(List<Courier> couriers)
     {
         Console.WriteLine();
-        Header("FUTÁR TELJESÍTMÉNY RANGSOR");
+        Header("FUTÁROK TELJESÍTMÉNYE");
 
         var ranked = couriers
             .OrderByDescending(c => c.DeliveriesCompleted)
@@ -78,9 +78,9 @@ public static class Reports
         if (ranked.Count >= 2)
         {
             Console.WriteLine();
-            var best  = ranked.First();
+            var best = ranked.First();
             var worst = ranked.Last();
-            Green ($"  Legjobb:      {best.Name} ({best.DeliveriesCompleted} kézb., {best.AvgTime:F1}p)");
+            Green($"  Legjobb:      {best.Name} ({best.DeliveriesCompleted} kézb., {best.AvgTime:F1}p)");
             Yellow($"  Fejlesztendő: {worst.Name} ({worst.LateDeliveries} késés, {worst.AvgTime:F1}p)");
         }
     }
@@ -101,10 +101,10 @@ public static class Reports
 
         foreach (int z in zoneIds)
         {
-            var zo    = orders.Where(o => o.ZoneId == z).ToList();
+            var zo = orders.Where(o => o.ZoneId == z).ToList();
             int total = zo.Count;
-            int del   = zo.Count(o => o.Status == OrderStatus.Delivered);
-            int late  = zo.Count(o => o.WasLate);
+            int del = zo.Count(o => o.Status == OrderStatus.Delivered);
+            int late = zo.Count(o => o.WasLate);
             double eff = total > 0 ? (double)del / total * 100 : 0;
             stats.Add((z, total));
 
@@ -112,7 +112,7 @@ public static class Reports
                 couriers.Where(c => c.CanServe(z)).Select(c => c.Name.Split(' ')[0]));
 
             Console.ForegroundColor = eff >= 100 ? ConsoleColor.Green
-                                    : eff >= 80  ? ConsoleColor.Yellow
+                                    : eff >= 80 ? ConsoleColor.Yellow
                                     : ConsoleColor.Red;
             Console.Write($"  {z,5} | {total,7} | {del,6} | ");
 
@@ -128,11 +128,11 @@ public static class Reports
 
         if (stats.Count >= 2)
         {
-            var most  = stats.MaxBy(s => s.Total);
+            var most = stats.MaxBy(s => s.Total);
             var least = stats.MinBy(s => s.Total);
             Console.WriteLine();
             Yellow($"  Legterheltebb: Zóna {most.Zone} ({most.Total} rendelés)");
-            Green ($"  Legkevésbé:    Zóna {least.Zone} ({least.Total} rendelés)");
+            Green($"  Legkevésbé:    Zóna {least.Zone} ({least.Total} rendelés)");
         }
     }
 
@@ -143,7 +143,7 @@ public static class Reports
         Console.ResetColor();
     }
 
-    private static void Green (string s) { Console.ForegroundColor = ConsoleColor.Green;    Console.WriteLine(s); Console.ResetColor(); }
-    private static void Yellow(string s) { Console.ForegroundColor = ConsoleColor.Yellow;   Console.WriteLine(s); Console.ResetColor(); }
-    private static void Gray  (string s) { Console.ForegroundColor = ConsoleColor.DarkGray; Console.WriteLine(s); Console.ResetColor(); }
+    private static void Green(string s) { Console.ForegroundColor = ConsoleColor.Green; Console.WriteLine(s); Console.ResetColor(); }
+    private static void Yellow(string s) { Console.ForegroundColor = ConsoleColor.Yellow; Console.WriteLine(s); Console.ResetColor(); }
+    private static void Gray(string s) { Console.ForegroundColor = ConsoleColor.DarkGray; Console.WriteLine(s); Console.ResetColor(); }
 }

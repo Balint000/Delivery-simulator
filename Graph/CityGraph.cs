@@ -32,6 +32,8 @@ public class CityGraph
         var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
         // Csúcsok
+        // Kiveszi a nodes nevű property-t a JSON-ból, ami egy tömb.
+        // EnumerateArray() végigiterál ezen a tömbön.
         foreach (var n in doc.RootElement.GetProperty("nodes").EnumerateArray())
         {
             graph.Nodes.Add(new Node

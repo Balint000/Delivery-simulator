@@ -39,12 +39,23 @@ public class GreedyAssignmentService
             if (!courier.CanServe(order.ZoneId)) continue;
 
             // Dijkstra: futár jelenlegi pozíciója → rendelés célcsúcsa
-            var (_, time) = _graph.FindShortestPath(courier.CurrentNodeId, order.AddressNodeId);
-            if (time == int.MaxValue) continue;
+            // 1) Legközelebbi raktár a futár aktuális pozíciójához
+            int warehouseId = _graph.FindNearestWarehouse(courier.CurrentNodeId, courier.ZoneIds);
 
-            if (time < bestTime)
+            // 2) Idő futár -> raktár
+            var (_, toWarehouseTime) = _graph.FindShortestPath(courier.CurrentNodeId, warehouseId);
+
+            // 3) Idő raktár -> cím
+            var (_, warehouseToAddressTime) = _graph.FindShortestPath(warehouseId, order.AddressNodeId);
+
+            // 4) Összesített idő: vissza telephelyre, onnan kiviszi
+            int totalTime = toWarehouseTime + warehouseToAddressTime;
+
+            if (totalTime == int.MaxValue) continue;
+
+            if (totalTime < bestTime)
             {
-                bestTime = time;
+                bestTime = totalTime;
                 best = courier;
             }
         }

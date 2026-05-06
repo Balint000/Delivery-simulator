@@ -49,11 +49,7 @@ var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liv
 
 // ── 3. SZIMULÁCIÓ ────────────────────────────────────
 
-<<<<<<< HEAD
 liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count);
-=======
-liveConsole.Init("Csomag kézbesítés szimuláció", couriers.Count);
->>>>>>> b3f4ccefe5b0979755247b56a6f7861ab75c8fe3
 
 // Ctrl+C kezelése: leállítja a teljes folyamatot
 using var cts = new CancellationTokenSource();
