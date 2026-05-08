@@ -19,14 +19,10 @@ PrintSetupScreen();
 var nodes = db.Nodes.ToList();
 var edges = db.Edges.ToList();
 var graph = new CityGraph(nodes, edges);  // lásd lent
-
 // Futárok DB-ből
 var couriers = db.Couriers.ToList();
-
 // Rendelések DB-ből
 var orders = db.Orders.ToList();
-
-
 
 Console.WriteLine();
 Console.ForegroundColor = ConsoleColor.DarkGray;

@@ -5,46 +5,16 @@ namespace DeliverySimulator.Graph;
 
 public class CityGraph
 {
-    public CityGraph(List<Node> nodes, List<Edge> edges)
-    {
-        Nodes.AddRange(nodes);
-        Edges.AddRange(edges);
-    }
     // ── Adatok ─────────────────────────────────────────
     public List<Node> Nodes { get; } = [];
     public List<Edge> Edges { get; } = [];
 
     private readonly Random _rng = new();
 
-    /// <summary>
-    /// Gráf betöltése DB-ből a kiválasztott város alapján.
-    /// </summary>
-    public static CityGraph LoadFromDb(AppDbContext db, int cityId)
+    public CityGraph(List<Node> nodes, List<Edge> edges)
     {
-        var graph = new CityGraph();
-
-        var nodes = db.Nodes.Where(n => n.CityId == cityId).ToList();
-        var edges = db.Edges.Where(e => e.CityId == cityId).ToList();
-
-        // NodeEntity → Node (futásidős modell)
-        // A JsonId az eredeti 0,1,2... azonosító amit a szimuláció használ
-        foreach (var n in nodes)
-            graph.Nodes.Add(new Node
-            {
-                Id = n.JsonId,   // ← a szimuláció ezt a számot várja
-                Name = n.Name,
-                Type = n.Zone,     // Zone-ba a "type" értéket mentettük (Warehouse/Delivery/Junction)
-                ZoneId = n.ZoneId
-            });
-
-        // EdgeEntity → Edge (irányítatlan → mindkét irány)
-        foreach (var e in edges)
-        {
-            graph.Edges.Add(new Edge { From = e.FromNodeId, To = e.ToNodeId, IdealMinutes = (int)e.Distance });
-            graph.Edges.Add(new Edge { From = e.ToNodeId, To = e.FromNodeId, IdealMinutes = (int)e.Distance });
-        }
-
-        return graph;
+        Nodes.AddRange(nodes);
+        Edges.AddRange(edges);
     }
 
     // ── Dijkstra ────────────────────────────────────────

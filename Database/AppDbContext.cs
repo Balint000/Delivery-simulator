@@ -26,6 +26,9 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder model)
     {
+        model.Entity<Node>()
+                .Property(n => n.Id)
+                .ValueGeneratedNever();
         // ZoneIds lista → vesszővel elválasztott szöveg
         model.Entity<Courier>()
             .Property(c => c.ZoneIds)

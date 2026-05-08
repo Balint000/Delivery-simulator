@@ -19,11 +19,11 @@ public class Node
 /// </summary>
 public class Edge
 {
+    public int Id { get; set; }
     public int From { get; set; }
     public int To { get; set; }
     public int IdealMinutes { get; set; }   // forgalom nélküli alap
     [NotMapped] public double TrafficMultiplier { get; set; } = 1.0;
-
     // Az aktuális (forgalommal számolt) menetidő
     [NotMapped] public int CurrentMinutes => (int)(IdealMinutes * TrafficMultiplier);
 }
