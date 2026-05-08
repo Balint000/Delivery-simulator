@@ -4,22 +4,6 @@ using DeliverySimulator.Models;
 
 namespace DeliverySimulator.Services;
 
-// ══════════════════════════════════════════════════════
-//  KÉZBESÍTÉSI SZIMULÁCIÓ
-//
-//  Egy futár teljes kézbesítési körének szimulációja:
-//    futár jelenlegi pozíció → raktár → csomag felvétel
-//    → kézbesítési cím → kézbesítve
-//
-//  Menet közben:
-//    - Forgalom véletlenszerűen változik (UpdateTraffic)
-//    - Az élő konzol frissül (LiveConsole)
-//    - Késés detektálás: tényleges > ideális × 1.10
-//    - Ha késett:
-//        → LogEvent("delay", ...) rövid jelzés az Eseményekbe
-//        → LogNotification(...)   részletes értesítés a megrendelőnek  ÚJ
-// ══════════════════════════════════════════════════════
-
 public class DeliverySimulationService
 {
     private readonly CityGraph _graph;
@@ -156,13 +140,6 @@ public class DeliverySimulationService
             // Késés mértéke percben (ideálistól való eltérés)
             int lateMins = totalActual - (order.IdealMinutes ?? 0);
 
-            // Rövid jelzés az Események panelbe (nem a részletes értesítés)
-            // _console.LogEvent("delay",
-            //    $"{order.Number} késik | {courier.Name} | +{lateMins}p");
-
-            // ── ÉRTESÍTÉS a megrendelőnek ────────────────
-            // ÚJ: külön panelban jelenik meg, nem az eseménynaplóban.
-            // Valós rendszerben: itt küldene e-mailt / SMS-t az ügyfélnek.
             _console.LogNotification(order.Customer, order.Number, lateMins);
         }
         else

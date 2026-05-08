@@ -3,22 +3,6 @@ using DeliverySimulator.Models;
 
 namespace DeliverySimulator.Services;
 
-// ══════════════════════════════════════════════════════
-//  NEAREST NEIGHBOR ÚTVONAL-OPTIMALIZÁLÁS
-//
-//  Probléma: ha egy futárnak 3 rendelése van, milyen sorrendben
-//  kézbesítsen? Véletlenszerű sorrend = felesleges kerülők.
-//
-//  Nearest Neighbor (közelítő TSP-megoldás):
-//    1. Indulj a raktárból
-//    2. Melyik rendelés a legközelebb? → azt kézbesítsd először
-//    3. Onnan melyik a legközelebb? → azt másodiknak
-//    4. Ismételd, amíg van rendelés
-//
-//  Nem garantál optimumot (NP-nehéz), de mindig jobb
-//  vagy egyenlő a véletlen sorrendnél.
-// ══════════════════════════════════════════════════════
-
 public class NearestNeighborService
 {
     private readonly CityGraph _graph;
@@ -34,17 +18,17 @@ public class NearestNeighborService
     public List<Order> Optimize(int startNodeId, List<Order> orders)
     {
         // 0 vagy 1 rendelés → nincs mit rendezni
-        if (orders.Count <= 1) return new List<Order>(orders);
+        if (orders.Count <= 1) return orders;
 
-        var remaining  = new List<Order>(orders);
-        var optimized  = new List<Order>();
+        var remaining = new List<Order>(orders);
+        var optimized = new List<Order>();
         int currentNode = startNodeId;
 
         while (remaining.Count > 0)
         {
             // Megkeressük a legközelebbi rendelést
-            Order? nearest   = null;
-            int    nearestTime = int.MaxValue;
+            Order? nearest = null;
+            int nearestTime = int.MaxValue;
 
             foreach (var order in remaining)
             {
@@ -52,7 +36,7 @@ public class NearestNeighborService
                 if (time < nearestTime)
                 {
                     nearestTime = time;
-                    nearest     = order;
+                    nearest = order;
                 }
             }
 

@@ -4,18 +4,7 @@ using DeliverySimulator.Graph;
 using DeliverySimulator.Models;
 using DeliverySimulator.Services;
 
-// ══════════════════════════════════════════════════════
-//  PROGRAM.CS  —  belépési pont
-//
-//  Feladata:
-//    1. Adatok betöltése (JSON)
-//    2. Service-ek összekapcsolása (wiring)
-//    3. Szimuláció indítása
-//    4. Riportok kiírása
-//
-// ══════════════════════════════════════════════════════
-
-// ── 1. SETUP ─────────────────────────────────────────
+// 1. SETUP
 
 PrintSetupScreen();
 
@@ -37,7 +26,7 @@ Console.Write("  Nyomj meg egy billentyűt a szimuláció indításához...");
 Console.ResetColor();
 Console.ReadKey(intercept: true);
 
-// ── 2. SERVICE PÉLDÁNYOSÍTÁS ────────────────────────────────
+// 2. SERVICE PÉLDÁNYOSÍTÁS
 // Objektumok létrehozása és összekapcsolása (SimOrch)
 
 var liveConsole = new LiveConsole();
@@ -47,7 +36,7 @@ var nn = new NearestNeighborService(graph);
 var simulation = new DeliverySimulationService(graph, liveConsole);
 var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liveConsole);
 
-// ── 3. SZIMULÁCIÓ ────────────────────────────────────
+// 3. SZIMULÁCIÓ
 
 liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count);
 
@@ -75,7 +64,7 @@ catch (OperationCanceledException)
 
 liveConsole.Finish();
 
-// ── 4. RIPORTOK ──────────────────────────────────────
+// 4. RIPORTOK
 
 PrintSummaryAndReports(result, orders, couriers);
 
@@ -85,10 +74,7 @@ Console.Write("  Nyomj meg egy billentyűt a kilépéshez...");
 Console.ResetColor();
 Console.ReadKey(intercept: true);
 
-
-// ══════════════════════════════════════════════════════
-//  SEGÉDFÜGGVÉNYEK (program szintű)
-// ══════════════════════════════════════════════════════
+//  SEGÉDFÜGGVÉNYEK
 
 static void PrintSetupScreen()
 {

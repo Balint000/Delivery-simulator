@@ -6,33 +6,13 @@ using DeliverySimulator.Models;
 
 namespace DeliverySimulator.Services;
 
-// ══════════════════════════════════════════════════════
-//  SZIMULÁCIÓ ORCHESTRÁTOR  —  a "karmester"
-//
-//  Felelőssége: a teljes szimuláció vezénylése.
-//    1. Greedy: rendelések kiosztása futároknak (initial batch)
-//    2. Maradék rendelések → ConcurrentQueue (szálbiztos sor)
-//    3. Task.WhenAll: minden futár PÁRHUZAMOSAN dolgozik (TPL)
-//    4. Minden futár kézbesítés után új rendelést kap a queue-ból
-//
-//  TPL (Task Parallel Library):
-//    Task.WhenAll(tasks) → elindítja az összes feladatot egyszerre,
-//    és megvárja amíg MINDENKI végzett.
-//    Olyan, mint amikor egyszerre küldöd el az összes futárt,
-//    nem egyik a másik után.
-//
-//  Thread-safety:
-//    ConcurrentQueue.TryDequeue() → atomikus, több szál is
-//    hívhatja egyszerre, nem adja ki ugyanazt az elemet kétszer.
-// ══════════════════════════════════════════════════════
-
 public class SimulationOrchestrator
 {
-    private readonly CityGraph                _graph;
-    private readonly GreedyAssignmentService  _greedy;
-    private readonly NearestNeighborService   _nn;
+    private readonly CityGraph _graph;
+    private readonly GreedyAssignmentService _greedy;
+    private readonly NearestNeighborService _nn;
     private readonly DeliverySimulationService _sim;
-    private readonly LiveConsole              _console;
+    private readonly LiveConsole _console;
 
     public SimulationOrchestrator(
         CityGraph graph,
@@ -41,10 +21,10 @@ public class SimulationOrchestrator
         DeliverySimulationService sim,
         LiveConsole console)
     {
-        _graph   = graph;
-        _greedy  = greedy;
-        _nn      = nn;
-        _sim     = sim;
+        _graph = graph;
+        _greedy = greedy;
+        _nn = nn;
+        _sim = sim;
         _console = console;
     }
 
@@ -53,7 +33,7 @@ public class SimulationOrchestrator
     /// </summary>
     public async Task<SimResult> RunAsync(
         List<Courier> couriers,
-        List<Order>   orders,
+        List<Order> orders,
         CancellationToken ct = default)
     {
         var sw = Stopwatch.StartNew();
@@ -92,11 +72,11 @@ public class SimulationOrchestrator
 
         // ── 4. Összesítés ────────────────────────────────
         return new SimResult(
-            Total:     orders.Count,
+            Total: orders.Count,
             Delivered: orders.Count(o => o.Status == OrderStatus.Delivered),
-            Late:      orders.Count(o => o.WasLate),
-            Unassigned:orders.Count(o => o.Status == OrderStatus.Pending),
-            Elapsed:   sw.Elapsed);
+            Late: orders.Count(o => o.WasLate),
+            Unassigned: orders.Count(o => o.Status == OrderStatus.Pending),
+            Elapsed: sw.Elapsed);
     }
 
     // ── Egy futár életciklusa (párhuzamosan fut) ────────
@@ -160,7 +140,7 @@ public class SimulationOrchestrator
         Dictionary<int, Order> orderMap)
     {
         var assigned = new List<Order>();
-        var skipped  = new List<Order>();
+        var skipped = new List<Order>();
         int maxTries = queue.Count;
 
         while (assigned.Count < courier.FreeSlots && skipped.Count + assigned.Count < maxTries)
@@ -169,8 +149,8 @@ public class SimulationOrchestrator
 
             if (courier.CanServe(order.ZoneId))
             {
-                order.Status             = OrderStatus.Assigned;
-                order.AssignedCourierId  = courier.Id;
+                order.Status = OrderStatus.Assigned;
+                order.AssignedCourierId = courier.Id;
                 courier.AssignedOrderIds.Add(order.Id);
                 assigned.Add(order);
 
@@ -193,12 +173,12 @@ public class SimulationOrchestrator
 /// record = immutable adatosztály, automatikus ToString/Equals.
 /// </summary>
 public record SimResult(
-    int      Total,
-    int      Delivered,
-    int      Late,
-    int      Unassigned,
+    int Total,
+    int Delivered,
+    int Late,
+    int Unassigned,
     TimeSpan Elapsed)
 {
     public double SuccessRate => Total > 0 ? (double)Delivered / Total : 0;
-    public double LateRate    => Delivered > 0 ? (double)Late / Delivered : 0;
+    public double LateRate => Delivered > 0 ? (double)Late / Delivered : 0;
 }

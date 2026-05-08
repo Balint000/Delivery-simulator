@@ -3,14 +3,6 @@ using System.Text.Json;
 
 namespace DeliverySimulator.Graph;
 
-// ══════════════════════════════════════════════════════
-//  VÁROSGRÁF  —  Dijkstra-alapú navigáció
-//
-//  A város csúcsokból (Node) és élekből (Edge) áll.
-//  Minden él súlya = menetidő percben.
-//  A forgalom (TrafficMultiplier) menet közben véletlenszerűen változik.
-// ══════════════════════════════════════════════════════
-
 public class CityGraph
 {
     // ── Adatok ─────────────────────────────────────────
@@ -18,8 +10,6 @@ public class CityGraph
     public List<Edge> Edges { get; } = [];
 
     private readonly Random _rng = new();
-
-    // ── Betöltés JSON-ból ───────────────────────────────
 
     /// <summary>
     /// Gráf betöltése JSON fájlból.
@@ -65,12 +55,6 @@ public class CityGraph
     /// <summary>
     /// Legrövidebb útvonal keresése Dijkstra-val, aktuális forgalommal.
     /// Visszatér: (csúcs-lista, összesített perc).
-    ///
-    /// Dijkstra lépései:
-    ///  1. Minden csúcs távolsága = végtelen, start = 0
-    ///  2. Ismétlés: válaszd a legközelebbi még nem látogatott csúcsot
-    ///  3. Frissítsd a szomszédok távolságát, ha jobb utat találtál
-    ///  4. Állj meg ha elérted a célt
     /// </summary>
     public (List<int> path, int totalMinutes) FindShortestPath(int from, int to)
     {
@@ -148,8 +132,6 @@ public class CityGraph
 
         return dist[to];
     }
-
-    // ── Forgalom szimuláció ─────────────────────────────
 
     /// <summary>
     /// Véletlenszerű forgalomváltozás minden élen.

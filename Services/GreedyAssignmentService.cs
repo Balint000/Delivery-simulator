@@ -3,15 +3,6 @@ using DeliverySimulator.Models;
 
 namespace DeliverySimulator.Services;
 
-// ══════════════════════════════════════════════════════
-//  GREEDY HOZZÁRENDELÉS
-//
-//  Algoritmus: minden rendeléshez a legközelebbi szabad futárt
-//  rendeljük hozzá (Dijkstra-alapú távolsággal).
-//
-//  "Greedy" (mohó) = mindig a lokálisan legjobbat választja.
-// ══════════════════════════════════════════════════════
-
 public class GreedyAssignmentService
 {
     private readonly CityGraph _graph;
