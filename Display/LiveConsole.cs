@@ -1,32 +1,6 @@
-using DeliverySimulator.Models;
+using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Display;
-
-// ══════════════════════════════════════════════════════
-//  ÉLŐ KONZOL MEGJELENÍTŐ
-//
-//  Három panel jelenik meg egymás alatt a konzolon:
-//
-//    1. FUTÁROK    — minden futár aktuális státusza
-//                   élőben frissül, nem görget
-//
-//    2. ESEMÉNYEK  — rendszer-log (mozgás, felvétel, kézbesítés)
-//                   max 10 sor, görgős: legrégebbi kiesik
-//
-//    3. ÉRTESÍTÉSEK — CSAK a késési figyelmeztetések
-//                    (amit a megrendelő kap)
-//                    max 5 sor, görgős: legrégebbi kiesik
-//
-//  ──────────────────────────────────────────────────────
-//  TRÜKK: Console.SetCursorPosition(x, y)
-//    A konzol minden sora és oszlopa koordinátával
-//    megcímezhető. Ha visszaugrunk egy korábbi sorba
-//    és felülírjuk → "frissülésnek" látszik görgetés nélkül.
-//
-//  THREAD-SAFETY:
-//    lock(_lock) → egyszerre csak egy futár/szál írhat
-//    a konzolra, így a párhuzamos Task-ok sem csúsznak össze.
-// ══════════════════════════════════════════════════════
 
 public class LiveConsole
 {

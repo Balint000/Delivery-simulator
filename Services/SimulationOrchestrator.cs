@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using DeliverySimulator.Display;
 using DeliverySimulator.Graph;
-using DeliverySimulator.Models;
+using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Services;
 

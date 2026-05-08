@@ -1,7 +1,7 @@
 using System.Text.Json;
 using DeliverySimulator.Display;
 using DeliverySimulator.Graph;
-using DeliverySimulator.Models;
+using DeliverySimulator.Database.Models;
 using DeliverySimulator.Services;
 using DeliverySimulator.Database;
 using Microsoft.EntityFrameworkCore;
@@ -15,17 +15,18 @@ await Seeder.SeedIfEmptyAsync(db);
 
 PrintSetupScreen();
 
-// Városgráf betöltése
-var graph = CityGraph.LoadFromFile("Data/city.json");
-PrintStep("Városgráf", $"{graph.Nodes.Count} csúcs, {graph.Edges.Count / 2} él");
+// Városgráf betöltése DB-ből
+var nodes = db.Nodes.ToList();
+var edges = db.Edges.ToList();
+var graph = new CityGraph(nodes, edges);  // lásd lent
 
-// Futárok betöltése
-var couriers = LoadJson<List<Courier>>("Data/couriers.json");
-PrintStep("Futárok", $"{couriers.Count} futár betöltve");
+// Futárok DB-ből
+var couriers = db.Couriers.ToList();
 
-// Rendelések betöltése
-var orders = LoadJson<List<Order>>("Data/orders.json");
-PrintStep("Rendelések", $"{orders.Count} rendelés betöltve");
+// Rendelések DB-ből
+var orders = db.Orders.ToList();
+
+
 
 Console.WriteLine();
 Console.ForegroundColor = ConsoleColor.DarkGray;
