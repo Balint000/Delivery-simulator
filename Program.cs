@@ -3,8 +3,15 @@ using DeliverySimulator.Display;
 using DeliverySimulator.Graph;
 using DeliverySimulator.Models;
 using DeliverySimulator.Services;
+using DeliverySimulator.Database;
+using Microsoft.EntityFrameworkCore;
 
 // 1. SETUP
+
+// Database init + seed
+await using var db = new AppDbContext();
+await db.Database.MigrateAsync(); // migration futtatás (létrehozza a DB-t ha nincs)
+await Seeder.SeedIfEmptyAsync(db);
 
 PrintSetupScreen();
 
