@@ -1,4 +1,4 @@
-using DeliverySimulator.Models;
+using DeliverySimulator.Database.Models;
 using DeliverySimulator.Services;
 
 namespace DeliverySimulator.Display;

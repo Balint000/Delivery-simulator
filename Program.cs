@@ -1,23 +1,32 @@
-using System.Text.Json;
 using DeliverySimulator.Display;
 using DeliverySimulator.Graph;
-using DeliverySimulator.Models;
+using DeliverySimulator.Database.Models;
 using DeliverySimulator.Services;
+using DeliverySimulator.Database;
+using Microsoft.EntityFrameworkCore;
 
-// 1. SETUP
+// ── 1. DB INICIALIZÁLÁS ──────────────────────────────
+await using var db = new AppDbContext();
+await db.Database.MigrateAsync();
+await Seeder.SeedIfEmptyAsync(db);
 
 PrintSetupScreen();
 
-// Városgráf betöltése
-var graph = CityGraph.LoadFromFile("Data/city.json");
-PrintStep("Városgráf", $"{graph.Nodes.Count} csúcs, {graph.Edges.Count / 2} él");
+// ── 2. ADATOK BETÖLTÉSE ──────────────────────────────
+// Egyelőre az első várost töltjük be.
+// A 3. lépésben (CLI menü) lesz itt interaktív városválasztó.
+var city = await db.Cities.FirstAsync();
 
-// Futárok betöltése
-var couriers = LoadJson<List<Courier>>("Data/couriers.json");
+var nodes = await db.Nodes.Where(n => n.CityId == city.Id).ToListAsync();
+var edges = await db.Edges.Where(e => e.CityId == city.Id).ToListAsync();
+var couriers = await db.Couriers.Where(c => c.CityId == city.Id).ToListAsync();
+var orders = await db.Orders.Where(o => o.CityId == city.Id).ToListAsync();
+
+var graph = new CityGraph(nodes, edges);
+
+PrintStep("Város", city.Name);
+PrintStep("Városgráf", $"{nodes.Count} csúcs, {edges.Count / 2} él");
 PrintStep("Futárok", $"{couriers.Count} futár betöltve");
-
-// Rendelések betöltése
-var orders = LoadJson<List<Order>>("Data/orders.json");
 PrintStep("Rendelések", $"{orders.Count} rendelés betöltve");
 
 Console.WriteLine();
@@ -26,21 +35,15 @@ Console.Write("  Nyomj meg egy billentyűt a szimuláció indításához...");
 Console.ResetColor();
 Console.ReadKey(intercept: true);
 
-// 2. SERVICE PÉLDÁNYOSÍTÁS
-// Objektumok létrehozása és összekapcsolása (SimOrch)
-
+// ── 3. SZIMULÁCIÓ ────────────────────────────────────
 var liveConsole = new LiveConsole();
-
 var greedy = new GreedyAssignmentService(graph);
 var nn = new NearestNeighborService(graph);
 var simulation = new DeliverySimulationService(graph, liveConsole);
 var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liveConsole);
 
-// 3. SZIMULÁCIÓ
-
 liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count);
 
-// Ctrl+C kezelése: leállítja a teljes folyamatot
 using var cts = new CancellationTokenSource();
 Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
 
@@ -50,8 +53,7 @@ SimResult result;
 try
 {
     result = await orchestrator.RunAsync(couriers, orders, cts.Token);
-    liveConsole.LogEvent("done",
-        $"Kész! {result.Delivered}/{result.Total} kézbesítve");
+    liveConsole.LogEvent("done", $"Kész! {result.Delivered}/{result.Total} kézbesítve");
 }
 catch (OperationCanceledException)
 {
@@ -64,8 +66,10 @@ catch (OperationCanceledException)
 
 liveConsole.Finish();
 
-// 4. RIPORTOK
+// ── 4. EREDMÉNYEK MENTÉSE DB-BE ──────────────────────
+await ResultSaver.SaveAsync(db, city.Id, result, orders, couriers);
 
+// ── 5. RIPORTOK ──────────────────────────────────────
 PrintSummaryAndReports(result, orders, couriers);
 
 Console.WriteLine();
@@ -74,7 +78,10 @@ Console.Write("  Nyomj meg egy billentyűt a kilépéshez...");
 Console.ResetColor();
 Console.ReadKey(intercept: true);
 
+
+// ══════════════════════════════════════════════════════
 //  SEGÉDFÜGGVÉNYEK
+// ══════════════════════════════════════════════════════
 
 static void PrintSetupScreen()
 {
@@ -125,15 +132,4 @@ static void PrintSummaryAndReports(SimResult result, List<Order> orders, List<Co
     Reports.PrintDelayReport(orders, couriers);
     Reports.PrintCourierReport(couriers);
     Reports.PrintZoneReport(orders, couriers);
-}
-
-/// <summary>
-/// Egyszerű JSON betöltés generikusan.
-/// </summary>
-static T LoadJson<T>(string path)
-{
-    var json = File.ReadAllText(path);
-    return JsonSerializer.Deserialize<T>(json,
-        new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-        ?? throw new Exception($"Nem sikerült betölteni: {path}");
 }

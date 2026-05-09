@@ -1,4 +1,4 @@
-using DeliverySimulator.Models;
+using DeliverySimulator.Database.Models;
 using System.Text.Json;
 
 namespace DeliverySimulator.Graph;
@@ -11,43 +11,10 @@ public class CityGraph
 
     private readonly Random _rng = new();
 
-    /// <summary>
-    /// Gráf betöltése JSON fájlból.
-    /// </summary>
-    public static CityGraph LoadFromFile(string path)
+    public CityGraph(List<Node> nodes, List<Edge> edges)
     {
-        var json = File.ReadAllText(path);
-        var doc = JsonDocument.Parse(json);
-        var graph = new CityGraph();
-        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-        // Csúcsok
-        // Kiveszi a nodes nevű property-t a JSON-ból, ami egy tömb.
-        // EnumerateArray() végigiterál ezen a tömbön.
-        foreach (var n in doc.RootElement.GetProperty("nodes").EnumerateArray())
-        {
-            graph.Nodes.Add(new Node
-            {
-                Id = n.GetProperty("id").GetInt32(),
-                Name = n.GetProperty("name").GetString()!,
-                Type = n.GetProperty("type").GetString()!,
-                ZoneId = n.TryGetProperty("zoneId", out var z) && z.ValueKind != JsonValueKind.Null
-                             ? z.GetInt32() : null
-            });
-        }
-
-        // Élek (irányítatlan → mindkét irányba felvesszük)
-        foreach (var e in doc.RootElement.GetProperty("edges").EnumerateArray())
-        {
-            int from = e.GetProperty("from").GetInt32();
-            int to = e.GetProperty("to").GetInt32();
-            int min = e.GetProperty("idealTimeMinutes").GetInt32();
-
-            graph.Edges.Add(new Edge { From = from, To = to, IdealMinutes = min });
-            graph.Edges.Add(new Edge { From = to, To = from, IdealMinutes = min });
-        }
-
-        return graph;
+        Nodes.AddRange(nodes);
+        Edges.AddRange(edges);
     }
 
     // ── Dijkstra ────────────────────────────────────────

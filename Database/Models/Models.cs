@@ -1,4 +1,6 @@
-namespace DeliverySimulator.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace DeliverySimulator.Database.Models;
 
 /// <summary>
 /// Egy csúcs a városgráfban (raktár, kézbesítési pont, kereszteződés).
@@ -6,6 +8,7 @@ namespace DeliverySimulator.Models;
 public class Node
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public string Name { get; set; } = "";
     public string Type { get; set; } = "";   // "Warehouse" | "Delivery" | "Junction"
     public int? ZoneId { get; set; }
@@ -17,13 +20,14 @@ public class Node
 /// </summary>
 public class Edge
 {
+    public int Id { get; set; }
+    public int CityId { get; set; }
     public int From { get; set; }
     public int To { get; set; }
     public int IdealMinutes { get; set; }   // forgalom nélküli alap
-    public double TrafficMultiplier { get; set; } = 1.0;
-
+    [NotMapped] public double TrafficMultiplier { get; set; } = 1.0;
     // Az aktuális (forgalommal számolt) menetidő
-    public int CurrentMinutes => (int)(IdealMinutes * TrafficMultiplier);
+    [NotMapped] public int CurrentMinutes => (int)(IdealMinutes * TrafficMultiplier);
 }
 
 /// <summary>
@@ -32,16 +36,17 @@ public class Edge
 public class Courier
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public string Name { get; set; } = "";
     public int CurrentNodeId { get; set; }   // gráf-csúcs ahol éppen van
     public List<int> ZoneIds { get; set; } = [];
     public int MaxCapacity { get; set; } = 3;
-    public List<int> AssignedOrderIds { get; set; } = [];
+    [NotMapped] public List<int> AssignedOrderIds { get; set; } = [];
 
     // Statisztikák — a szimuláció tölti fel
-    public int DeliveriesCompleted { get; set; } = 0;
-    public int LateDeliveries { get; set; } = 0;
-    public int TotalTimeMinutes { get; set; } = 0;
+    [NotMapped] public int DeliveriesCompleted { get; set; } = 0;
+    [NotMapped] public int LateDeliveries { get; set; } = 0;
+    [NotMapped] public int TotalTimeMinutes { get; set; } = 0;
 
     // Segédtulajdonságok
     public bool HasRoom => AssignedOrderIds.Count < MaxCapacity;
@@ -57,6 +62,7 @@ public class Courier
 public class Order
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public string Number { get; set; } = "";
     public string Customer { get; set; } = "";
     public string Address { get; set; } = "";
@@ -64,13 +70,13 @@ public class Order
     public int ZoneId { get; set; }
 
     // Státusz
-    public OrderStatus Status { get; set; } = OrderStatus.Pending;
-    public int? AssignedCourierId { get; set; }
+    [NotMapped] public OrderStatus Status { get; set; } = OrderStatus.Pending;
+    [NotMapped] public int? AssignedCourierId { get; set; }
 
     // Időmérés — a szimuláció tölti fel
-    public int? IdealMinutes { get; set; }
-    public int? ActualMinutes { get; set; }
-    public bool WasLate { get; set; } = false;
+    [NotMapped] public int? IdealMinutes { get; set; }
+    [NotMapped] public int? ActualMinutes { get; set; }
+    [NotMapped] public bool WasLate { get; set; } = false;
 
     // Késés mértéke percben
     public int LateMinutes => WasLate && IdealMinutes.HasValue && ActualMinutes.HasValue
