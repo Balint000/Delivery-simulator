@@ -11,3 +11,7 @@ packages/
 *.nupkg
 project.lock.json
 artifacts/
+
+*.db
+*.db-shm
+*.db-wal
