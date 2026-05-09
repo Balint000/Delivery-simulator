@@ -1,0 +1,71 @@
+{
+  "cityName": "Budapest",
+  "nodes": [
+    {
+      "id": 0,
+      "name": "Raktár Pestszentlőrinc",
+      "type": "Warehouse",
+      "zoneId": 1
+    },
+    { "id": 1, "name": "Kőbánya", "type": "Delivery", "zoneId": 1 },
+    { "id": 2, "name": "Rákosmente", "type": "Delivery", "zoneId": 1 },
+    { "id": 3, "name": "Kispest", "type": "Delivery", "zoneId": 1 },
+    {
+      "id": 4,
+      "name": "Keleti pu. csomópont",
+      "type": "Junction",
+      "zoneId": null
+    },
+    { "id": 5, "name": "Raktár Óbuda", "type": "Warehouse", "zoneId": 2 },
+    { "id": 6, "name": "Óbuda", "type": "Delivery", "zoneId": 2 },
+    { "id": 7, "name": "Budaörs", "type": "Delivery", "zoneId": 2 },
+    { "id": 8, "name": "Zugló", "type": "Delivery", "zoneId": 2 },
+    {
+      "id": 9,
+      "name": "Margit híd csomópont",
+      "type": "Junction",
+      "zoneId": null
+    },
+    { "id": 10, "name": "Raktár Csepel", "type": "Warehouse", "zoneId": 3 },
+    { "id": 11, "name": "Csepel", "type": "Delivery", "zoneId": 3 },
+    { "id": 12, "name": "Soroksár", "type": "Delivery", "zoneId": 3 },
+    { "id": 13, "name": "Ferencváros", "type": "Delivery", "zoneId": 3 },
+    {
+      "id": 14,
+      "name": "Belváros csomópont",
+      "type": "Junction",
+      "zoneId": null
+    },
+    { "id": 15, "name": "Budai csomópont", "type": "Junction", "zoneId": null }
+  ],
+  "edges": [
+    { "from": 0, "to": 1, "idealTimeMinutes": 6 },
+    { "from": 0, "to": 4, "idealTimeMinutes": 8 },
+    { "from": 1, "to": 2, "idealTimeMinutes": 5 },
+    { "from": 1, "to": 4, "idealTimeMinutes": 7 },
+    { "from": 2, "to": 3, "idealTimeMinutes": 6 },
+    { "from": 2, "to": 4, "idealTimeMinutes": 9 },
+    { "from": 3, "to": 4, "idealTimeMinutes": 5 },
+    { "from": 3, "to": 14, "idealTimeMinutes": 7 },
+    { "from": 4, "to": 14, "idealTimeMinutes": 4 },
+    { "from": 4, "to": 9, "idealTimeMinutes": 6 },
+    { "from": 5, "to": 6, "idealTimeMinutes": 5 },
+    { "from": 5, "to": 9, "idealTimeMinutes": 7 },
+    { "from": 6, "to": 7, "idealTimeMinutes": 8 },
+    { "from": 6, "to": 9, "idealTimeMinutes": 6 },
+    { "from": 7, "to": 15, "idealTimeMinutes": 7 },
+    { "from": 8, "to": 4, "idealTimeMinutes": 8 },
+    { "from": 8, "to": 9, "idealTimeMinutes": 5 },
+    { "from": 9, "to": 14, "idealTimeMinutes": 5 },
+    { "from": 9, "to": 15, "idealTimeMinutes": 6 },
+    { "from": 10, "to": 11, "idealTimeMinutes": 4 },
+    { "from": 10, "to": 14, "idealTimeMinutes": 9 },
+    { "from": 11, "to": 12, "idealTimeMinutes": 5 },
+    { "from": 11, "to": 14, "idealTimeMinutes": 8 },
+    { "from": 12, "to": 13, "idealTimeMinutes": 6 },
+    { "from": 12, "to": 14, "idealTimeMinutes": 7 },
+    { "from": 13, "to": 14, "idealTimeMinutes": 4 },
+    { "from": 14, "to": 15, "idealTimeMinutes": 5 },
+    { "from": 15, "to": 5, "idealTimeMinutes": 6 }
+  ]
+}

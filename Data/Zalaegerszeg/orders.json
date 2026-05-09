@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "number": "ZEG-001",
+    "customer": "Adamik Petra",
+    "address": "Dísz tér 2",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 2,
+    "number": "ZEG-002",
+    "customer": "Balogh Ferenc",
+    "address": "Bazita sor 5",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 3,
+    "number": "ZEG-003",
+    "customer": "Czine Orsolya",
+    "address": "Dísz tér 14",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 4,
+    "number": "ZEG-004",
+    "customer": "Dávid Gábor",
+    "address": "Bazita sor 18",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 5,
+    "number": "ZEG-005",
+    "customer": "Erdős Katalin",
+    "address": "Dísz tér 27",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 6,
+    "number": "ZEG-006",
+    "customer": "Fekete Sándor",
+    "address": "Kertváros tér 3",
+    "addressNodeId": 5,
+    "zoneId": 2
+  },
+  {
+    "id": 7,
+    "number": "ZEG-007",
+    "customer": "Gulyás Piroska",
+    "address": "Nesztip sor 7",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 8,
+    "number": "ZEG-008",
+    "customer": "Hegedűs Attila",
+    "address": "Kertváros tér 16",
+    "addressNodeId": 5,
+    "zoneId": 2
+  },
+  {
+    "id": 9,
+    "number": "ZEG-009",
+    "customer": "Imrek Zsuzsa",
+    "address": "Nesztip sor 21",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 10,
+    "number": "ZEG-010",
+    "customer": "Jakab Kornél",
+    "address": "Kertváros tér 29",
+    "addressNodeId": 5,
+    "zoneId": 2
+  },
+  {
+    "id": 11,
+    "number": "ZEG-011",
+    "customer": "Kovács Anita",
+    "address": "Ipari köz 4",
+    "addressNodeId": 9,
+    "zoneId": 3
+  },
+  {
+    "id": 12,
+    "number": "ZEG-012",
+    "customer": "Lakatos Béla",
+    "address": "Botfa út 9",
+    "addressNodeId": 10,
+    "zoneId": 3
+  },
+  {
+    "id": 13,
+    "number": "ZEG-013",
+    "customer": "Mezei Dóra",
+    "address": "Ipari köz 18",
+    "addressNodeId": 9,
+    "zoneId": 3
+  },
+  {
+    "id": 14,
+    "number": "ZEG-014",
+    "customer": "Nagy Imre",
+    "address": "Botfa út 23",
+    "addressNodeId": 10,
+    "zoneId": 3
+  },
+  {
+    "id": 15,
+    "number": "ZEG-015",
+    "customer": "Oláh Vanda",
+    "address": "Ipari köz 31",
+    "addressNodeId": 9,
+    "zoneId": 3
+  }
+]

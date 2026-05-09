@@ -55,60 +55,54 @@ public class LiveConsole
         lock (_lock)
         {
             _courierCount = courierCount;
-
-            // Kurzor elrejtése: ne villogjon frissítés közben
             Console.CursorVisible = false;
             Console.Clear();
 
             // ── Fejléc ──────────────────────────────────
-            Write(ConsoleColor.Cyan,
-                $"{title}\n");
-            Console.WriteLine("\n");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(title);
+            Console.ResetColor();
+            Console.WriteLine();
 
-            // ── 1. Futárpanel ────────────────────────────
-            Write(ConsoleColor.DarkYellow,
-                "━━━ FUTÁROK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            // ── 1. Futárpanel fejléce ────────────────────
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("━━━ FUTÁROK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Console.ResetColor();
 
-            // Feljegyezzük, hogy hányadik sortól kezdődnek a futársorok
+            // MOST rögzítjük — itt van a kurzor a futársorok első sora előtt
             _courierPanelRow = Console.CursorTop;
 
-            // Lefoglalunk annyi üres sort, ahány futár van.
-            // Ezeket fogja majd az UpdateCourier() felülírni.
             for (int i = 0; i < courierCount; i++)
                 Console.WriteLine(new string(' ', Console.WindowWidth - 1));
 
-            Console.WriteLine(); // üres elválasztó sor
+            Console.WriteLine();
 
-            // ── 2. Eseménynapló ──────────────────────────
-            Write(ConsoleColor.DarkYellow,
-                "━━━ ESEMÉNYEK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            // ── 2. Eseménynapló fejléce ──────────────────
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("━━━ ESEMÉNYEK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            Console.ResetColor();
 
-            // Feljegyezzük az eseménynapló kezdősorát
+            // MOST rögzítjük az eseménynapló első sorát
             _eventPanelRow = Console.CursorTop;
 
-            // MaxEvents db üres sort foglalunk le az eseményeknek
             for (int i = 0; i < MaxEvents; i++)
                 Console.WriteLine(new string(' ', Console.WindowWidth - 1));
 
-            Console.WriteLine(); // üres elválasztó sor
+            Console.WriteLine();
 
-            // ── 3. Értesítési panel ──────────────────────
-            // Csak a késési értesítések kerülnek ide,
-            // elkülönítve az általános eseménynaplótól.
-            // Lila (DarkMagenta) szín: vizuálisan el van különítve.
-            Write(ConsoleColor.DarkMagenta,
-                "━━━ ÉRTESÍTÉSEK (késési figyelmeztetések) ━━━━━━━━━━━━━");
+            // ── 3. Értesítési panel fejléce ──────────────
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine("━━━ ÉRTESÍTÉSEK (késési figyelmeztetések) ━━━━━━━━━━━━━");
+            Console.ResetColor();
 
-            // Feljegyezzük az értesítési panel kezdősorát
+            // MOST rögzítjük az értesítési panel első sorát
             _notificationPanelRow = Console.CursorTop;
 
-            // MaxNotifications db üres sort foglalunk le
             for (int i = 0; i < MaxNotifications; i++)
                 Console.WriteLine(new string(' ', Console.WindowWidth - 1));
 
-            Console.WriteLine(); // üres elválasztó sor
+            Console.WriteLine();
 
-            // Jelezzük, hogy az Init() lefutott — a többi metódus elindulhat
             _ready = true;
         }
     }

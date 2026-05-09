@@ -1,0 +1,45 @@
+{
+  "cityName": "Szeged",
+  "nodes": [
+    { "id": 0, "name": "Raktár Észak", "type": "Warehouse", "zoneId": 1 },
+    { "id": 1, "name": "Újszeged", "type": "Delivery", "zoneId": 1 },
+    { "id": 2, "name": "Tarján", "type": "Delivery", "zoneId": 1 },
+    { "id": 3, "name": "Rókus", "type": "Delivery", "zoneId": 1 },
+    { "id": 4, "name": "Északi csomópont", "type": "Junction", "zoneId": null },
+    { "id": 5, "name": "Raktár Belváros", "type": "Warehouse", "zoneId": 2 },
+    { "id": 6, "name": "Belváros", "type": "Delivery", "zoneId": 2 },
+    { "id": 7, "name": "Móraváros", "type": "Delivery", "zoneId": 2 },
+    {
+      "id": 8,
+      "name": "Belváros csomópont",
+      "type": "Junction",
+      "zoneId": null
+    },
+    { "id": 9, "name": "Raktár Déli", "type": "Warehouse", "zoneId": 3 },
+    { "id": 10, "name": "Felsőváros", "type": "Delivery", "zoneId": 3 },
+    { "id": 11, "name": "Kecskés-telep", "type": "Delivery", "zoneId": 3 },
+    { "id": 12, "name": "Déli csomópont", "type": "Junction", "zoneId": null }
+  ],
+  "edges": [
+    { "from": 0, "to": 1, "idealTimeMinutes": 5 },
+    { "from": 0, "to": 4, "idealTimeMinutes": 6 },
+    { "from": 1, "to": 2, "idealTimeMinutes": 4 },
+    { "from": 1, "to": 4, "idealTimeMinutes": 5 },
+    { "from": 2, "to": 3, "idealTimeMinutes": 5 },
+    { "from": 2, "to": 4, "idealTimeMinutes": 6 },
+    { "from": 3, "to": 4, "idealTimeMinutes": 4 },
+    { "from": 4, "to": 8, "idealTimeMinutes": 5 },
+    { "from": 5, "to": 6, "idealTimeMinutes": 3 },
+    { "from": 5, "to": 8, "idealTimeMinutes": 4 },
+    { "from": 6, "to": 7, "idealTimeMinutes": 5 },
+    { "from": 6, "to": 8, "idealTimeMinutes": 3 },
+    { "from": 7, "to": 8, "idealTimeMinutes": 4 },
+    { "from": 7, "to": 12, "idealTimeMinutes": 6 },
+    { "from": 8, "to": 12, "idealTimeMinutes": 5 },
+    { "from": 9, "to": 10, "idealTimeMinutes": 4 },
+    { "from": 9, "to": 12, "idealTimeMinutes": 5 },
+    { "from": 10, "to": 11, "idealTimeMinutes": 5 },
+    { "from": 10, "to": 12, "idealTimeMinutes": 4 },
+    { "from": 11, "to": 12, "idealTimeMinutes": 3 }
+  ]
+}

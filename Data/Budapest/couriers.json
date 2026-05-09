@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "name": "Benkő Tamás",
+    "currentNodeId": 0,
+    "zoneIds": [1],
+    "maxCapacity": 3
+  },
+  {
+    "id": 2,
+    "name": "Csordás Veronika",
+    "currentNodeId": 0,
+    "zoneIds": [1],
+    "maxCapacity": 3
+  },
+  {
+    "id": 3,
+    "name": "Darvas Olivér",
+    "currentNodeId": 5,
+    "zoneIds": [2],
+    "maxCapacity": 3
+  },
+  {
+    "id": 4,
+    "name": "Erdei Klára",
+    "currentNodeId": 5,
+    "zoneIds": [2],
+    "maxCapacity": 2
+  },
+  {
+    "id": 5,
+    "name": "Farkas Benedek",
+    "currentNodeId": 10,
+    "zoneIds": [3],
+    "maxCapacity": 3
+  },
+  {
+    "id": 6,
+    "name": "Gergely Réka",
+    "currentNodeId": 10,
+    "zoneIds": [3],
+    "maxCapacity": 2
+  },
+  {
+    "id": 7,
+    "name": "Halász Norbert",
+    "currentNodeId": 0,
+    "zoneIds": [1, 2],
+    "maxCapacity": 2
+  },
+  {
+    "id": 8,
+    "name": "Illés Szilvia",
+    "currentNodeId": 5,
+    "zoneIds": [2, 3],
+    "maxCapacity": 2
+  },
+  {
+    "id": 9,
+    "name": "Juhász Ádám",
+    "currentNodeId": 14,
+    "zoneIds": [1, 2, 3],
+    "maxCapacity": 1
+  }
+]

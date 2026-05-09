@@ -1,0 +1,47 @@
+{
+  "cityName": "Zalaegerszeg",
+  "nodes": [
+    { "id": 0, "name": "Raktár Belváros", "type": "Warehouse", "zoneId": 1 },
+    { "id": 1, "name": "Belváros", "type": "Delivery", "zoneId": 1 },
+    { "id": 2, "name": "Bazita", "type": "Delivery", "zoneId": 1 },
+    {
+      "id": 3,
+      "name": "Belváros csomópont",
+      "type": "Junction",
+      "zoneId": null
+    },
+    { "id": 4, "name": "Raktár Kertváros", "type": "Warehouse", "zoneId": 2 },
+    { "id": 5, "name": "Kertváros", "type": "Delivery", "zoneId": 2 },
+    { "id": 6, "name": "Nesztip", "type": "Delivery", "zoneId": 2 },
+    { "id": 7, "name": "Keleti csomópont", "type": "Junction", "zoneId": null },
+    { "id": 8, "name": "Raktár Ipari", "type": "Warehouse", "zoneId": 3 },
+    { "id": 9, "name": "Ipari negyed", "type": "Delivery", "zoneId": 3 },
+    { "id": 10, "name": "Botfa", "type": "Delivery", "zoneId": 3 },
+    {
+      "id": 11,
+      "name": "Nyugati csomópont",
+      "type": "Junction",
+      "zoneId": null
+    }
+  ],
+  "edges": [
+    { "from": 0, "to": 1, "idealTimeMinutes": 4 },
+    { "from": 0, "to": 3, "idealTimeMinutes": 5 },
+    { "from": 1, "to": 2, "idealTimeMinutes": 5 },
+    { "from": 1, "to": 3, "idealTimeMinutes": 3 },
+    { "from": 2, "to": 3, "idealTimeMinutes": 4 },
+    { "from": 3, "to": 7, "idealTimeMinutes": 6 },
+    { "from": 3, "to": 11, "idealTimeMinutes": 7 },
+    { "from": 4, "to": 5, "idealTimeMinutes": 4 },
+    { "from": 4, "to": 7, "idealTimeMinutes": 5 },
+    { "from": 5, "to": 6, "idealTimeMinutes": 5 },
+    { "from": 5, "to": 7, "idealTimeMinutes": 4 },
+    { "from": 6, "to": 7, "idealTimeMinutes": 6 },
+    { "from": 7, "to": 11, "idealTimeMinutes": 5 },
+    { "from": 8, "to": 9, "idealTimeMinutes": 3 },
+    { "from": 8, "to": 11, "idealTimeMinutes": 5 },
+    { "from": 9, "to": 10, "idealTimeMinutes": 4 },
+    { "from": 9, "to": 11, "idealTimeMinutes": 4 },
+    { "from": 10, "to": 11, "idealTimeMinutes": 3 }
+  ]
+}

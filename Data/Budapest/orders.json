@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "number": "BUD-001",
+    "customer": "Antal Zsófia",
+    "address": "Kőér utca 3",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 2,
+    "number": "BUD-002",
+    "customer": "Boros Máté",
+    "address": "Rákóczi út 14",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 3,
+    "number": "BUD-003",
+    "customer": "Czibor Hanna",
+    "address": "Határ út 7",
+    "addressNodeId": 3,
+    "zoneId": 1
+  },
+  {
+    "id": 4,
+    "number": "BUD-004",
+    "customer": "Demeter László",
+    "address": "Kőér utca 21",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 5,
+    "number": "BUD-005",
+    "customer": "Eszteri Pál",
+    "address": "Rákóczi út 38",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 6,
+    "number": "BUD-006",
+    "customer": "Fodor Ágnes",
+    "address": "Határ út 19",
+    "addressNodeId": 3,
+    "zoneId": 1
+  },
+  {
+    "id": 7,
+    "number": "BUD-007",
+    "customer": "Gál Levente",
+    "address": "Kőér utca 45",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 8,
+    "number": "BUD-008",
+    "customer": "Hajdu Petra",
+    "address": "Rákóczi út 52",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 9,
+    "number": "BUD-009",
+    "customer": "Imre Viktor",
+    "address": "Óbudai rakpart 5",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 10,
+    "number": "BUD-010",
+    "customer": "Jakab Tünde",
+    "address": "Budaörsi út 12",
+    "addressNodeId": 7,
+    "zoneId": 2
+  },
+  {
+    "id": 11,
+    "number": "BUD-011",
+    "customer": "Kálmán Zsolt",
+    "address": "Zugligeti út 8",
+    "addressNodeId": 8,
+    "zoneId": 2
+  },
+  {
+    "id": 12,
+    "number": "BUD-012",
+    "customer": "Lőrincz Borbála",
+    "address": "Óbudai rakpart 23",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 13,
+    "number": "BUD-013",
+    "customer": "Magyar Csaba",
+    "address": "Budaörsi út 31",
+    "addressNodeId": 7,
+    "zoneId": 2
+  },
+  {
+    "id": 14,
+    "number": "BUD-014",
+    "customer": "Nádas Emese",
+    "address": "Zugligeti út 17",
+    "addressNodeId": 8,
+    "zoneId": 2
+  },
+  {
+    "id": 15,
+    "number": "BUD-015",
+    "customer": "Orbán Kristóf",
+    "address": "Óbudai rakpart 41",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 16,
+    "number": "BUD-016",
+    "customer": "Polgár Mariann",
+    "address": "Csepeli út 4",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 17,
+    "number": "BUD-017",
+    "customer": "Rózsa Gergő",
+    "address": "Soroksári út 9",
+    "addressNodeId": 12,
+    "zoneId": 3
+  },
+  {
+    "id": 18,
+    "number": "BUD-018",
+    "customer": "Süle Adrienn",
+    "address": "Mester utca 15",
+    "addressNodeId": 13,
+    "zoneId": 3
+  },
+  {
+    "id": 19,
+    "number": "BUD-019",
+    "customer": "Takó Bálint",
+    "address": "Csepeli út 22",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 20,
+    "number": "BUD-020",
+    "customer": "Ujvári Dóra",
+    "address": "Soroksári út 28",
+    "addressNodeId": 12,
+    "zoneId": 3
+  },
+  {
+    "id": 21,
+    "number": "BUD-021",
+    "customer": "Vásárhelyi Nóra",
+    "address": "Mester utca 37",
+    "addressNodeId": 13,
+    "zoneId": 3
+  },
+  {
+    "id": 22,
+    "number": "BUD-022",
+    "customer": "Zsolnai Péter",
+    "address": "Csepeli út 44",
+    "addressNodeId": 11,
+    "zoneId": 3
+  }
+]
