@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliverySimulator.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260508074336_InitialCreate")]
+    [Migration("20260509070238_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -40,6 +40,9 @@ namespace DeliverySimulator.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CityId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("CurrentNodeId")
                         .HasColumnType("INTEGER");
 
@@ -65,6 +68,9 @@ namespace DeliverySimulator.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CityId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("From")
                         .HasColumnType("INTEGER");
 
@@ -82,6 +88,9 @@ namespace DeliverySimulator.Database.Migrations
             modelBuilder.Entity("DeliverySimulator.Database.Models.Node", b =>
                 {
                     b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CityId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
@@ -111,6 +120,9 @@ namespace DeliverySimulator.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("AddressNodeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CityId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Customer")

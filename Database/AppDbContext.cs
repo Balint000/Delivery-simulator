@@ -3,7 +3,6 @@ using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Database;
 
-// Város — csak a DB-nek kell, nincs Models-ben
 public class City
 {
     public int Id { get; set; }
@@ -17,6 +16,8 @@ public class AppDbContext : DbContext
     public DbSet<Edge> Edges => Set<Edge>();
     public DbSet<Courier> Couriers => Set<Courier>();
     public DbSet<Order> Orders => Set<Order>();
+    public DbSet<SimulationRun> SimulationRuns => Set<SimulationRun>();
+    public DbSet<DeliveryLog> DeliveryLogs => Set<DeliveryLog>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -26,17 +27,24 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder model)
     {
+        // Node Id a JSON-ból jön (0-13), nem auto-generált
         model.Entity<Node>()
-                .Property(n => n.Id)
-                .ValueGeneratedNever();
-        // ZoneIds lista → vesszővel elválasztott szöveg
+             .Property(n => n.Id)
+             .ValueGeneratedNever();
+
+        // ZoneIds lista → vesszővel elválasztott szöveg ("1,2,3")
         model.Entity<Courier>()
-            .Property(c => c.ZoneIds)
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v == "" ? new List<int>() :
-                     v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                      .Select(int.Parse).ToList()
-            );
+             .Property(c => c.ZoneIds)
+             .HasConversion(
+                 v => string.Join(',', v),
+                 v => v == "" ? new List<int>() :
+                      v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                       .Select(int.Parse).ToList());
+
+        // DeliveryLog → SimulationRun kapcsolat
+        model.Entity<DeliveryLog>()
+             .HasOne<SimulationRun>()
+             .WithMany(r => r.Logs)
+             .HasForeignKey(d => d.SimRunId);
     }
 }

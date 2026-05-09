@@ -29,6 +29,7 @@ namespace DeliverySimulator.Database.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CityId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     CurrentNodeId = table.Column<int>(type: "INTEGER", nullable: false),
                     ZoneIds = table.Column<string>(type: "TEXT", nullable: false),
@@ -45,6 +46,7 @@ namespace DeliverySimulator.Database.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CityId = table.Column<int>(type: "INTEGER", nullable: false),
                     From = table.Column<int>(type: "INTEGER", nullable: false),
                     To = table.Column<int>(type: "INTEGER", nullable: false),
                     IdealMinutes = table.Column<int>(type: "INTEGER", nullable: false)
@@ -59,6 +61,7 @@ namespace DeliverySimulator.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false),
+                    CityId = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Type = table.Column<string>(type: "TEXT", nullable: false),
                     ZoneId = table.Column<int>(type: "INTEGER", nullable: true)
@@ -74,6 +77,7 @@ namespace DeliverySimulator.Database.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    CityId = table.Column<int>(type: "INTEGER", nullable: false),
                     Number = table.Column<string>(type: "TEXT", nullable: false),
                     Customer = table.Column<string>(type: "TEXT", nullable: false),
                     Address = table.Column<string>(type: "TEXT", nullable: false),
