@@ -8,6 +8,7 @@ namespace DeliverySimulator.Database.Models;
 public class Node
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public string Name { get; set; } = "";
     public string Type { get; set; } = "";   // "Warehouse" | "Delivery" | "Junction"
     public int? ZoneId { get; set; }
@@ -20,6 +21,7 @@ public class Node
 public class Edge
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public int From { get; set; }
     public int To { get; set; }
     public int IdealMinutes { get; set; }   // forgalom nélküli alap
@@ -34,6 +36,7 @@ public class Edge
 public class Courier
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public string Name { get; set; } = "";
     public int CurrentNodeId { get; set; }   // gráf-csúcs ahol éppen van
     public List<int> ZoneIds { get; set; } = [];
@@ -59,6 +62,7 @@ public class Courier
 public class Order
 {
     public int Id { get; set; }
+    public int CityId { get; set; }
     public string Number { get; set; } = "";
     public string Customer { get; set; } = "";
     public string Address { get; set; } = "";

@@ -130,14 +130,3 @@ static void PrintSummaryAndReports(SimResult result, List<Order> orders, List<Co
     Reports.PrintCourierReport(couriers);
     Reports.PrintZoneReport(orders, couriers);
 }
-
-/// <summary>
-/// Egyszerű JSON betöltés generikusan.
-/// </summary>
-static T LoadJson<T>(string path)
-{
-    var json = File.ReadAllText(path);
-    return JsonSerializer.Deserialize<T>(json,
-        new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
-        ?? throw new Exception($"Nem sikerült betölteni: {path}");
-}
