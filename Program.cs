@@ -4,7 +4,6 @@ using DeliverySimulator.Database.Models;
 using DeliverySimulator.Services;
 using DeliverySimulator.Database;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 // ── 1. DB INICIALIZÁLÁS ──────────────────────────────
 await using var db = new AppDbContext();
@@ -26,23 +25,15 @@ while (true)
             "[5] Kilépés"
         });
 
-    if (choice == -1 || choice == 4) // Esc vagy [5]
+    if (choice == -1 || choice == 4)
         break;
 
     switch (choice)
     {
-        case 0:
-            await RunSimulationAsync(db);
-            break;
-        case 1:
-            await AddOrderAsync(db);
-            break;
-        case 2:
-            await ListPlacesAsync(db);
-            break;
-        case 3:
-            await ShowPastRunsAsync(db);
-            break;
+        case 0: await RunSimulationAsync(db); break;
+        case 1: await AddOrderAsync(db); break;
+        case 2: await ListPlacesAsync(db); break;
+        case 3: await ShowPastRunsAsync(db); break;
     }
 
     Console.WriteLine();
@@ -52,22 +43,7 @@ while (true)
     Console.ReadKey(intercept: true);
 }
 
-// ── SEGÉDFÜGGVÉNYEK ───────────────────────────────────
-
-static async Task<City?> SelectCityAsync(AppDbContext db, string? title = null)
-{
-    var cities = await db.Cities.OrderBy(c => c.Name).ToListAsync();
-    if (cities.Count == 0)
-    {
-        Console.WriteLine("Nincs egyetlen város sem az adatbázisban.");
-        return null;
-    }
-
-    var items = cities.Select(c => c.Name).ToList();
-    int index = ConsoleMenu.Show(title ?? "Város választása", items);
-    if (index < 0) return null;
-    return cities[index];
-}
+// ── SZIMULÁCIÓ ────────────────────────────────────────
 
 static async Task RunSimulationAsync(AppDbContext db)
 {
@@ -107,11 +83,11 @@ static async Task RunSimulationAsync(AppDbContext db)
 
     liveConsole.LogEvent("start", "Szimuláció elindult!");
 
-    SimResult result;
+    SimResult simResult;
     try
     {
-        result = await orchestrator.RunAsync(couriers, orders, cts.Token);
-        liveConsole.LogEvent("done", $"Kész! {result.Delivered}/{result.Total} kézbesítve");
+        simResult = await orchestrator.RunAsync(couriers, orders, cts.Token);
+        liveConsole.LogEvent("done", $"Kész! {simResult.Delivered}/{simResult.Total} kézbesítve");
     }
     catch (OperationCanceledException)
     {
@@ -123,12 +99,10 @@ static async Task RunSimulationAsync(AppDbContext db)
     }
 
     liveConsole.Finish();
-
-    // Ha van ResultSaver-ed, maradhat ez a hívás:
-    // await ResultSaver.SaveAsync(db, city.Id, result, orders, couriers);
-
-    PrintSummaryAndReports(result, orders, couriers);
+    PrintSummaryAndReports(simResult, orders, couriers);
 }
+
+// ── ÚJ RENDELÉS HOZZÁADÁSA ────────────────────────────
 
 static async Task AddOrderAsync(AppDbContext db)
 {
@@ -147,10 +121,10 @@ static async Task AddOrderAsync(AppDbContext db)
     Console.Write("Cím (szabad szöveg): ");
     var address = Console.ReadLine() ?? "";
 
-    // Csak Delivery típusú helyek közül válasszon
     var deliveryNodes = await db.Nodes
         .Where(n => n.CityId == city.Id && n.Type == "Delivery")
-        .OrderBy(n => n.Name)
+        .OrderBy(n => n.ZoneId)
+        .ThenBy(n => n.Name)
         .ToListAsync();
 
     if (deliveryNodes.Count == 0)
@@ -160,7 +134,7 @@ static async Task AddOrderAsync(AppDbContext db)
     }
 
     var nodeItems = deliveryNodes
-        .Select(n => $"{n.Name} (zona: {(n.ZoneId?.ToString() ?? "-")})")
+        .Select(n => $"{n.Name}  (zóna: {n.ZoneId?.ToString() ?? "-"})")
         .ToList();
 
     int nodeIndex = ConsoleMenu.Show("Cél hely kiválasztása", nodeItems);
@@ -169,36 +143,66 @@ static async Task AddOrderAsync(AppDbContext db)
     var node = deliveryNodes[nodeIndex];
     int zoneId = node.ZoneId ?? 0;
 
-    Console.Write($"Prioritás (0-3, Enter = 0): ");
-    var prioInput = Console.ReadLine();
-    _ = int.TryParse(prioInput, out var priority);
-    if (priority < 0 || priority > 3) priority = 0;
+    // ── Rendelésszám generálása a város stílusa szerint ──
+    //
+    // A meglévő rendelésszámokból kiolvassuk a prefixet és a max sorszámot,
+    // így az új szám pontosan illeszkedik a város konvenciójához.
+    //
+    // Formátum: "PREFIX-NNN"  (pl. BUD-023, SZE-018, ZEG-016, ORD-033)
+    //   - prefix : a kötőjel előtti rész  (pl. "BUD")
+    //   - padding: a szám eredeti szélessége, nullákkal kiegészítve (pl. 3 → "023")
+    //
+    // Ha még nincs egyetlen rendelés sem a városhoz, fallback: "ORD-001"
 
-    // Egyszerű rendelés-sorszám generálás az adott városra
-    int maxIdInCity = await db.Orders
+    var existingNumbers = await db.Orders
         .Where(o => o.CityId == city.Id)
-        .Select(o => (int?)o.Id)
-        .MaxAsync() ?? 0;
-    int newId = maxIdInCity + 1;
+        .Select(o => o.Number)
+        .ToListAsync();
 
+    string prefix = "ORD";
+    int maxNum = 0;
+    int padding = 3;
+
+    foreach (var num in existingNumbers)
+    {
+        int dash = num.LastIndexOf('-');
+        if (dash < 0) continue;
+
+        string p = num[..dash];
+        string n = num[(dash + 1)..];
+        if (!int.TryParse(n, out int parsed)) continue;
+
+        prefix = p;
+        padding = Math.Max(padding, n.Length);
+        if (parsed > maxNum) maxNum = parsed;
+    }
+
+    // Mentés ideiglenes számmal, majd frissítés az auto-generált Id ismeretében.
+    // Az Id-t NEM állítjuk be kézzel — a SQLite auto-increment kezeli,
+    // hogy elkerüljük a UNIQUE constraint hibát.
     var order = new Order
     {
-        Id = newId,
         CityId = city.Id,
-        Number = $"O-{city.Id}-{newId}",
+        Number = "TMP",
         Customer = customer,
         Address = address,
         AddressNodeId = node.Id,
         ZoneId = zoneId
-        // Status stb. marad alapértelmezett
     };
 
     db.Orders.Add(order);
+    await db.SaveChangesAsync();   // itt kapja meg az auto-generált Id-t
+
+    order.Number = $"{prefix}-{(maxNum + 1).ToString().PadLeft(padding, '0')}";
     await db.SaveChangesAsync();
 
     Console.WriteLine();
-    Console.WriteLine($"Új rendelés hozzáadva: {order.Number}");
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine($"  ✔ Hozzáadva: {order.Number} | {order.Customer} → {node.Name} (zóna {zoneId})");
+    Console.ResetColor();
 }
+
+// ── HELYEK LISTÁZÁSA ──────────────────────────────────
 
 static async Task ListPlacesAsync(AppDbContext db)
 {
@@ -220,10 +224,10 @@ static async Task ListPlacesAsync(AppDbContext db)
     Console.WriteLine(" Id  Típus       Zóna   Név");
     Console.WriteLine("──────────────────────────────────────────────");
     foreach (var n in nodes)
-    {
         Console.WriteLine($"{n.Id,3}  {n.Type,-10}  {n.ZoneId,4}   {n.Name}");
-    }
 }
+
+// ── KORÁBBI FUTÁSOK ───────────────────────────────────
 
 static async Task ShowPastRunsAsync(AppDbContext db)
 {
@@ -236,7 +240,6 @@ static async Task ShowPastRunsAsync(AppDbContext db)
     Console.ResetColor();
     Console.WriteLine();
 
-    // Feltételezzük, hogy van DbSet<SimulationRun> a contextben
     var runs = await db.Set<SimulationRun>()
         .Where(r => r.CityId == city.Id)
         .OrderByDescending(r => r.RunAt)
@@ -258,7 +261,21 @@ static async Task ShowPastRunsAsync(AppDbContext db)
     }
 }
 
-// ── EREDETI KISEGÍTŐK ─────────────────────────────────
+// ── SEGÉDFÜGGVÉNYEK ───────────────────────────────────
+
+static async Task<City?> SelectCityAsync(AppDbContext db, string? title = null)
+{
+    var cities = await db.Cities.OrderBy(c => c.Name).ToListAsync();
+    if (cities.Count == 0)
+    {
+        Console.WriteLine("Nincs egyetlen város sem az adatbázisban.");
+        return null;
+    }
+
+    int index = ConsoleMenu.Show(title ?? "Város választása", cities.Select(c => c.Name).ToList());
+    if (index < 0) return null;
+    return cities[index];
+}
 
 static void PrintSetupScreen()
 {
