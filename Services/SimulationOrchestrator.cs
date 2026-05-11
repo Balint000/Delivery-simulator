@@ -14,11 +14,6 @@ public class SimulationOrchestrator
     private readonly DeliverySimulationService _sim;
     private readonly LiveConsole _console;
 
-    // ── Élő queue referencia ──────────────────────────
-    // RunAsync tölti fel, EnqueueOrder ezen keresztül ad hozzá rendelést futás közben.
-    // volatile: a módosítás azonnal látható minden szálból, race condition nélkül.
-    private volatile ConcurrentQueue<Order>? _liveQueue;
-
     public SimulationOrchestrator(
         CityGraph graph,
         GreedyAssignmentService greedy,
@@ -31,29 +26,6 @@ public class SimulationOrchestrator
         _nn = nn;
         _sim = sim;
         _console = console;
-    }
-
-    // ── Élő rendelés hozzáadása ───────────────────────
-
-    /// <summary>
-    /// Futás közben ad hozzá egy új rendelést a szimulációhoz.
-    ///
-    /// A ConcurrentQueue-ba kerül — a futárok a következő Refill()
-    /// hívásnál automatikusan felveszik, ha van szabad kapacitásuk
-    /// és a megfelelő zónába esik.
-    ///
-    /// Ha a szimuláció még nem indult el, vagy már véget ért
-    /// (_liveQueue == null), a rendelés figyelmen kívül marad.
-    /// </summary>
-    public void EnqueueOrder(Order order)
-    {
-        if (_liveQueue == null) return;
-
-        order.Status = OrderStatus.Pending;
-        _liveQueue.Enqueue(order);
-
-        _console.LogEvent("refill",
-            $"🆕 Új rendelés érkezett futás közben: {order.Number} ({order.Customer})");
     }
 
     /// <summary>
@@ -73,11 +45,8 @@ public class SimulationOrchestrator
             $"Queue-ban: {orders.Count(o => o.Status == OrderStatus.Pending)}");
 
         // ── 2. Maradék → ConcurrentQueue ────────────────
-        // _liveQueue-ként tároljuk, hogy EnqueueOrder elérhesse
         var queue = new ConcurrentQueue<Order>(
             orders.Where(o => o.Status == OrderStatus.Pending));
-
-        _liveQueue = queue;
 
         var orderMap = orders.ToDictionary(o => o.Id);
 
@@ -85,15 +54,9 @@ public class SimulationOrchestrator
         await Task.WhenAll(
             couriers.Select(c => CourierLoopAsync(c, queue, orderMap, ct)));
 
-        // Szimuláció véget ért, queue-t nullázza
-        _liveQueue = null;
-
         sw.Stop();
 
         // ── 4. Összesítés ────────────────────────────────
-        // Az orders lista tartalmazza az eredeti rendeléseket.
-        // Az élő hozzáadott rendelések az orderMap-ben nem szerepelnek,
-        // de a queue-ból kerülnek kézbesítésre — külön összesíthetők.
         return new SimResult(
             Total: orders.Count,
             Delivered: orders.Count(o => o.Status == OrderStatus.Delivered),
@@ -102,8 +65,9 @@ public class SimulationOrchestrator
             Elapsed: sw.Elapsed);
     }
 
-    // ── Egy futár életciklusa (párhuzamosan fut) ────────
-
+    /// <summary>
+    /// Egy futár ,,életciklusa"
+    /// </summary>
     private async Task CourierLoopAsync(
         Courier courier,
         ConcurrentQueue<Order> queue,
@@ -114,11 +78,11 @@ public class SimulationOrchestrator
         {
             ct.ThrowIfCancellationRequested();
 
+            // Snapshot: .ToList() azért kell, mert a szimuláció
+            // közben eltávolítja az elemet az AssignedOrderIds-ból
             var batch = courier.AssignedOrderIds
                 .ToList()
-                .Select(id => orderMap.TryGetValue(id, out var o) ? o : null)
-                .Where(o => o != null)
-                .Cast<Order>()
+                .Select(id => orderMap[id])
                 .ToList();
 
             if (batch.Count == 0)
@@ -127,6 +91,7 @@ public class SimulationOrchestrator
                 if (batch.Count == 0) break;
             }
 
+            // Nearest Neighbor: optimális kézbesítési sorrend
             var optimizedBatch = _nn.Optimize(courier.CurrentNodeId, batch);
 
             foreach (var order in optimizedBatch)
@@ -144,10 +109,8 @@ public class SimulationOrchestrator
 
     /// <summary>
     /// Futár feltöltése a ConcurrentQueue-ból.
-    ///
-    /// FONTOS VÁLTOZÁS: az élőben hozzáadott rendelések nem szerepelnek
-    /// az orderMap-ben. Ha TryGetValue sikertelen, akkor az order már
-    /// tartalmaz minden szükséges adatot (a hívó állítja be).
+    /// Csak a futár zónájába eső rendeléseket veszi fel.
+    /// Rossz zónásakat visszateszi a sor végére.
     /// </summary>
     private List<Order> Refill(
         Courier courier,
@@ -167,10 +130,6 @@ public class SimulationOrchestrator
                 order.Status = OrderStatus.Assigned;
                 order.AssignedCourierId = courier.Id;
                 courier.AssignedOrderIds.Add(order.Id);
-
-                // Ha az orderMap nem tartalmazza (élő hozzáadás), felvesszük
-                orderMap.TryAdd(order.Id, order);
-
                 assigned.Add(order);
 
                 _console.LogEvent("refill",
@@ -189,6 +148,7 @@ public class SimulationOrchestrator
 
 /// <summary>
 /// A szimuláció végeredménye.
+/// record = immutable adatosztály, automatikus ToString/Equals.
 /// </summary>
 public record SimResult(
     int Total,

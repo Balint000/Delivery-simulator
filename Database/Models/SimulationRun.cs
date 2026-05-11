@@ -17,6 +17,5 @@ public class SimulationRun
     public int Unassigned { get; set; }
     public double ElapsedSeconds { get; set; }
 
-    // Navigációs property — EF tölti fel
     public List<DeliveryLog> Logs { get; set; } = [];
 }

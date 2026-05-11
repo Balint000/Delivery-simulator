@@ -5,12 +5,12 @@ using DeliverySimulator.Services;
 using DeliverySimulator.Database;
 using Microsoft.EntityFrameworkCore;
 
-// ── 1. DB INICIALIZÁLÁS ──────────────────────────────
+// 1. database inicializálás
 await using var db = new AppDbContext();
 await db.Database.MigrateAsync();
 await Seeder.SeedIfEmptyAsync(db);
 
-// ── FŐMENÜ LOOP ──────────────────────────────────────
+// Főmenü
 
 while (true)
 {
@@ -43,11 +43,11 @@ while (true)
     Console.ReadKey(intercept: true);
 }
 
-// ── SZIMULÁCIÓ ────────────────────────────────────────
+// Szimuláció futtatása
 
 static async Task RunSimulationAsync(AppDbContext db)
 {
-    var city = await SelectCityAsync(db, "Szimuláció indítása — válassz várost");
+    var city = await SelectCityAsync(db, "Szimuláció indítása (válassz várost)");
     if (city == null) return;
 
     PrintSetupScreen();
@@ -102,7 +102,7 @@ static async Task RunSimulationAsync(AppDbContext db)
     PrintSummaryAndReports(simResult, orders, couriers);
 }
 
-// ── ÚJ RENDELÉS HOZZÁADÁSA ────────────────────────────
+// Új rendelés hozzáadása
 
 static async Task AddOrderAsync(AppDbContext db)
 {
@@ -144,14 +144,6 @@ static async Task AddOrderAsync(AppDbContext db)
     int zoneId = node.ZoneId ?? 0;
 
     // ── Rendelésszám generálása a város stílusa szerint ──
-    //
-    // A meglévő rendelésszámokból kiolvassuk a prefixet és a max sorszámot,
-    // így az új szám pontosan illeszkedik a város konvenciójához.
-    //
-    // Formátum: "PREFIX-NNN"  (pl. BUD-023, SZE-018, ZEG-016, ORD-033)
-    //   - prefix : a kötőjel előtti rész  (pl. "BUD")
-    //   - padding: a szám eredeti szélessége, nullákkal kiegészítve (pl. 3 → "023")
-    //
     // Ha még nincs egyetlen rendelés sem a városhoz, fallback: "ORD-001"
 
     var existingNumbers = await db.Orders
@@ -202,7 +194,7 @@ static async Task AddOrderAsync(AppDbContext db)
     Console.ResetColor();
 }
 
-// ── HELYEK LISTÁZÁSA ──────────────────────────────────
+// Helyek listázása
 
 static async Task ListPlacesAsync(AppDbContext db)
 {
@@ -227,7 +219,7 @@ static async Task ListPlacesAsync(AppDbContext db)
         Console.WriteLine($"{n.Id,3}  {n.Type,-10}  {n.ZoneId,4}   {n.Name}");
 }
 
-// ── KORÁBBI FUTÁSOK ───────────────────────────────────
+// Korábbi futtatások
 
 static async Task ShowPastRunsAsync(AppDbContext db)
 {
@@ -261,7 +253,7 @@ static async Task ShowPastRunsAsync(AppDbContext db)
     }
 }
 
-// ── SEGÉDFÜGGVÉNYEK ───────────────────────────────────
+// Segédfüggvények
 
 static async Task<City?> SelectCityAsync(AppDbContext db, string? title = null)
 {
