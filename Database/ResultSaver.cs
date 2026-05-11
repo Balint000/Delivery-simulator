@@ -5,7 +5,6 @@ namespace DeliverySimulator.Database;
 
 /// <summary>
 /// Szimuláció végeredményének mentése DB-be.
-/// Minden futás után hívódik — SimulationRun + per-rendelés DeliveryLog.
 /// </summary>
 public static class ResultSaver
 {
