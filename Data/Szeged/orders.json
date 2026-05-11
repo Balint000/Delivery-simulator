@@ -1,0 +1,138 @@
+[
+  {
+    "id": 1,
+    "number": "SZE-001",
+    "customer": "Ábrahám Tímea",
+    "address": "Újszegedi út 3",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 2,
+    "number": "SZE-002",
+    "customer": "Bata Gábor",
+    "address": "Tarjáni sor 8",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 3,
+    "number": "SZE-003",
+    "customer": "Csala Renáta",
+    "address": "Rókusi krt. 12",
+    "addressNodeId": 3,
+    "zoneId": 1
+  },
+  {
+    "id": 4,
+    "number": "SZE-004",
+    "customer": "Dér Zsolt",
+    "address": "Újszegedi út 19",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 5,
+    "number": "SZE-005",
+    "customer": "Engi Mária",
+    "address": "Tarjáni sor 26",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 6,
+    "number": "SZE-006",
+    "customer": "Fábián Péter",
+    "address": "Rókusi krt. 31",
+    "addressNodeId": 3,
+    "zoneId": 1
+  },
+  {
+    "id": 7,
+    "number": "SZE-007",
+    "customer": "Gecse Vivien",
+    "address": "Kárász utca 5",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 8,
+    "number": "SZE-008",
+    "customer": "Hajnal András",
+    "address": "Móraváros tér 11",
+    "addressNodeId": 7,
+    "zoneId": 2
+  },
+  {
+    "id": 9,
+    "number": "SZE-009",
+    "customer": "Illés Borbála",
+    "address": "Kárász utca 22",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 10,
+    "number": "SZE-010",
+    "customer": "Jámbor László",
+    "address": "Móraváros tér 34",
+    "addressNodeId": 7,
+    "zoneId": 2
+  },
+  {
+    "id": 11,
+    "number": "SZE-011",
+    "customer": "Kása Nikolett",
+    "address": "Kárász utca 39",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 12,
+    "number": "SZE-012",
+    "customer": "Ladányi Csaba",
+    "address": "Felsővárosi út 4",
+    "addressNodeId": 10,
+    "zoneId": 3
+  },
+  {
+    "id": 13,
+    "number": "SZE-013",
+    "customer": "Magyar Erika",
+    "address": "Kecskés sor 9",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 14,
+    "number": "SZE-014",
+    "customer": "Nánási Dávid",
+    "address": "Felsővárosi út 18",
+    "addressNodeId": 10,
+    "zoneId": 3
+  },
+  {
+    "id": 15,
+    "number": "SZE-015",
+    "customer": "Oláh Mónika",
+    "address": "Kecskés sor 25",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 16,
+    "number": "SZE-016",
+    "customer": "Pécsi Tamás",
+    "address": "Felsővárosi út 33",
+    "addressNodeId": 10,
+    "zoneId": 3
+  },
+  {
+    "id": 17,
+    "number": "SZE-017",
+    "customer": "Rózsa Krisztina",
+    "address": "Kecskés sor 41",
+    "addressNodeId": 11,
+    "zoneId": 3
+  }
+]

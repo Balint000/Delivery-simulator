@@ -25,28 +25,31 @@ public class CityGraph
     /// </summary>
     public (List<int> path, int totalMinutes) FindShortestPath(int from, int to)
     {
-        int n = Nodes.Count;
-        var dist = new int[n];     // legrövidebb távolság
-        var prev = new int[n];     // melyik csúcson át értük el
-        var done = new bool[n];    // feldolgozva?
+        var dist = new Dictionary<int, int>();
+        var prev = new Dictionary<int, int>();
+        var done = new HashSet<int>();
 
-        // 1. Inicializálás
-        for (int i = 0; i < n; i++) { dist[i] = int.MaxValue; prev[i] = -1; }
+        foreach (var n in Nodes) { dist[n.Id] = int.MaxValue; prev[n.Id] = -1; }
         dist[from] = 0;
 
-        for (int step = 0; step < n - 1; step++)
+        int nodeCount = Nodes.Count;
+        for (int step = 0; step < nodeCount - 1; step++)
         {
-            // 2. Legközelebbi nem feldolgozott csúcs
+            // Legközelebbi nem feldolgozott csúcs
             int u = -1;
-            for (int i = 0; i < n; i++)
-                if (!done[i] && (u == -1 || dist[i] < dist[u])) u = i;
+            int uDist = int.MaxValue;
+            foreach (var kv in dist)
+            {
+                if (!done.Contains(kv.Key) && kv.Value < uDist)
+                { u = kv.Key; uDist = kv.Value; }
+            }
 
-            if (u == -1 || dist[u] == int.MaxValue) break;
-            done[u] = true;
+            if (u == -1 || uDist == int.MaxValue) break;
+            done.Add(u);
 
-            // 3. Szomszédok frissítése
             foreach (var edge in Edges.Where(e => e.From == u))
             {
+                if (!dist.ContainsKey(edge.To)) continue;
                 int newDist = dist[u] + edge.CurrentMinutes;
                 if (newDist < dist[edge.To])
                 {
@@ -58,46 +61,48 @@ public class CityGraph
 
         // Útvonal visszakövetése
         var path = new List<int>();
-        for (int cur = to; cur != -1; cur = prev[cur])
+        for (int cur = to; cur != -1 && prev.ContainsKey(cur); cur = prev[cur])
+        {
             path.Insert(0, cur);
-
+            if (cur == from) break;
+        }
         if (path.Count == 0 || path[0] != from)
             return ([], int.MaxValue);
 
-        return (path, dist[to]);
+        return (path, dist.GetValueOrDefault(to, int.MaxValue));
     }
 
-    /// <summary>
-    /// Ideális menetidő forgalom nélkül (összehasonlításhoz, késés-detektáláshoz).
-    /// </summary>
     public int IdealTime(int from, int to)
     {
-        // Ugyanaz mint FindShortestPath, de IdealMinutes-szal
-        int n = Nodes.Count;
-        var dist = new int[n];
-        var done = new bool[n];
+        var dist = new Dictionary<int, int>();
+        var done = new HashSet<int>();
 
-        for (int i = 0; i < n; i++) dist[i] = int.MaxValue;
+        foreach (var n in Nodes) dist[n.Id] = int.MaxValue;
         dist[from] = 0;
 
-        for (int step = 0; step < n - 1; step++)
+        int nodeCount = Nodes.Count;
+        for (int step = 0; step < nodeCount - 1; step++)
         {
-            int u = -1;
-            for (int i = 0; i < n; i++)
-                if (!done[i] && (u == -1 || dist[i] < dist[u])) u = i;
+            int u = -1; int uDist = int.MaxValue;
+            foreach (var kv in dist)
+            {
+                if (!done.Contains(kv.Key) && kv.Value < uDist)
+                { u = kv.Key; uDist = kv.Value; }
+            }
 
-            if (u == -1 || dist[u] == int.MaxValue) break;
-            done[u] = true;
+            if (u == -1 || uDist == int.MaxValue) break;
+            done.Add(u);
 
             foreach (var edge in Edges.Where(e => e.From == u))
             {
-                int newDist = dist[u] + edge.IdealMinutes;   // IdealMinutes
+                if (!dist.ContainsKey(edge.To)) continue;
+                int newDist = dist[u] + edge.IdealMinutes;
                 if (newDist < dist[edge.To])
                     dist[edge.To] = newDist;
             }
         }
 
-        return dist[to];
+        return dist.GetValueOrDefault(to, int.MaxValue);
     }
 
     /// <summary>
