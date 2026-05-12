@@ -19,19 +19,38 @@ public class LiveConsole
     private int _courierCount;
     private bool _ready;
 
+    // FIX #1 – Az adatbázis-ID NEM feltétlenül 1-től növekvő egész.
+    // Ezért Id→sorindex szótárat használunk a kurzorsor kiszámításához.
+    private Dictionary<int, int> _courierIndexMap = [];
+
     // ── Input mód ───────────────────────────────────────
-    // Ha igaz, az összes frissítési metódus (UpdateCourier, LogEvent, stb.)
-    // kihagyja a konzolra írást, hogy ne írja felül a felhasználó bevitelét.
-    // volatile: azonnal látható legyen az összes szálból.
     private volatile bool _inputMode = false;
 
     // Inicializálás
 
-    public void Init(string title, int courierCount)
+    /// <param name="courierIndexMap">Futár DB-Id → 0-alapú sorindex</param>
+    public void Init(string title, int courierCount, Dictionary<int, int> courierIndexMap)
     {
         lock (_lock)
         {
             _courierCount = courierCount;
+            _courierIndexMap = courierIndexMap;
+
+            int minHeight = 24 + courierCount;
+            if (Console.WindowHeight < minHeight)
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"⚠  A terminálablak túl kicsi a megjelenítéshez.");
+                Console.WriteLine($"   Szükséges: legalább {minHeight} sor magas ablak.");
+                Console.WriteLine($"   Jelenlegi: {Console.WindowHeight} sor.");
+                Console.WriteLine();
+                Console.ResetColor();
+                Console.WriteLine("Nagyítsd meg az ablakot, majd nyomj Entert.");
+                Console.ReadLine();
+                Console.Clear();
+            }
+
             Console.CursorVisible = false;
             Console.Clear();
 
@@ -86,12 +105,15 @@ public class LiveConsole
         int completedCount = 0,
         int? estimatedMin = null)
     {
-        // Input mód alatt nem írunk a konzolra
         if (!_ready || _inputMode) return;
 
         lock (_lock)
         {
-            if (_inputMode) return; // double-check a lockon belül
+            if (_inputMode) return;
+
+            int rowIndex = _courierIndexMap.TryGetValue(courierId, out int idx)
+                ? idx
+                : _courierCount - 1;
 
             string loc = target != null
                 ? $"{Clip(location, 14)} → {Clip(target, 14)}"
@@ -100,7 +122,7 @@ public class LiveConsole
             string eta = estimatedMin.HasValue ? $"~{estimatedMin}p" : "     ";
             string line = $"  {status,-25} │ {name,-30} │ {loc,-45} │ {eta,-8} │ {completedCount} kézb.";
 
-            int row = _courierPanelRow + (courierId - 1);
+            int row = _courierPanelRow + rowIndex;
             Overwrite(row, line);
         }
     }
@@ -189,6 +211,8 @@ public class LiveConsole
 
         for (int i = 0; i < maxLines; i++)
         {
+            int row = panelRow + i;
+            if (row < 0 || row >= Console.WindowHeight) continue;
             Console.SetCursorPosition(0, panelRow + i);
 
             if (i < lines.Count)
@@ -208,6 +232,8 @@ public class LiveConsole
 
     private static void Overwrite(int row, string text)
     {
+        if (row < 0 || row >= Console.WindowHeight) return;
+
         int origRow = Console.CursorTop;
         int origCol = Console.CursorLeft;
         Console.SetCursorPosition(0, row);

@@ -35,14 +35,16 @@ while (true)
         case 1: await AddOrderAsync(db); break;
         case 2: await ListPlacesAsync(db); break;
         case 3: await ShowPastRunsAsync(db); break;
-        case 4: await Seeder.SeedIfEmptyAsync(db); Console.WriteLine("Frissítés kész."); break;
+        case 4:
+            await Seeder.SeedIfEmptyAsync(db);
+            Console.WriteLine("  Frissítés kész.");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
+            Console.ResetColor();
+            Console.ReadKey(intercept: true); Console.WriteLine("Frissítés kész.");
+            break;
     }
-
-    Console.WriteLine();
-    Console.ForegroundColor = ConsoleColor.DarkGray;
-    Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
-    Console.ResetColor();
-    Console.ReadKey(intercept: true);
 }
 
 // Szimuláció futtatása
@@ -78,10 +80,22 @@ static async Task RunSimulationAsync(AppDbContext db)
     var simulation = new DeliverySimulationService(graph, liveConsole);
     var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liveConsole);
 
-    liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count);
+    var courierIndexMap = couriers
+        .OrderBy(c => c.Id)
+        .Select((c, i) => (c.Id, Index: i))
+        .ToDictionary(x => x.Id, x => x.Index);
+
+    liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count, courierIndexMap);
 
     using var cts = new CancellationTokenSource();
-    Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
+
+    ConsoleCancelEventHandler cancelHandler = (_, e) =>
+    {
+        e.Cancel = true; // megakadályozza az azonnali process-kilépést
+        if (!cts.IsCancellationRequested)
+            cts.Cancel();
+    };
+    Console.CancelKeyPress += cancelHandler;
 
     liveConsole.LogEvent("start", "Szimuláció elindult!");
 
@@ -91,7 +105,6 @@ static async Task RunSimulationAsync(AppDbContext db)
         simResult = await orchestrator.RunAsync(couriers, orders, cts.Token);
         liveConsole.LogEvent("done", $"Kész! {simResult.Delivered}/{simResult.Total} kézbesítve");
 
-        // Futási eredmény elmentése az adatbázisba
         await ResultSaver.SaveAsync(db, city.Id, simResult, orders, couriers);
         liveConsole.LogEvent("saved", "💾 Futás elmentve az adatbázisba.");
     }
@@ -102,6 +115,10 @@ static async Task RunSimulationAsync(AppDbContext db)
         Console.WriteLine("\n  Szimuláció megszakítva.");
         Console.ResetColor();
         return;
+    }
+    finally
+    {
+        Console.CancelKeyPress -= cancelHandler;
     }
 
     liveConsole.Finish();
@@ -149,9 +166,6 @@ static async Task AddOrderAsync(AppDbContext db)
     var node = deliveryNodes[nodeIndex];
     int zoneId = node.ZoneId ?? 0;
 
-    // ── Rendelésszám generálása a város stílusa szerint ──
-    // Ha még nincs egyetlen rendelés sem a városhoz, fallback: "ORD-001"
-
     var existingNumbers = await db.Orders
         .Where(o => o.CityId == city.Id)
         .Select(o => o.Number)
@@ -175,9 +189,6 @@ static async Task AddOrderAsync(AppDbContext db)
         if (parsed > maxNum) maxNum = parsed;
     }
 
-    // Mentés ideiglenes számmal, majd frissítés az auto-generált Id ismeretében.
-    // Az Id-t NEM állítjuk be kézzel — a SQLite auto-increment kezeli,
-    // hogy elkerüljük a UNIQUE constraint hibát.
     var order = new Order
     {
         CityId = city.Id,
@@ -189,7 +200,7 @@ static async Task AddOrderAsync(AppDbContext db)
     };
 
     db.Orders.Add(order);
-    await db.SaveChangesAsync();   // itt kapja meg az auto-generált Id-t
+    await db.SaveChangesAsync();
 
     order.Number = $"{prefix}-{(maxNum + 1).ToString().PadLeft(padding, '0')}";
     await db.SaveChangesAsync();
@@ -198,6 +209,12 @@ static async Task AddOrderAsync(AppDbContext db)
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine($"  Hozzáadva: {order.Number} | {order.Customer} → {node.Name} (zóna {zoneId})");
     Console.ResetColor();
+
+    Console.WriteLine();
+    Console.ForegroundColor = ConsoleColor.DarkGray;
+    Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
+    Console.ResetColor();
+    Console.ReadKey(intercept: true);
 }
 
 // Helyek listázása
@@ -223,6 +240,12 @@ static async Task ListPlacesAsync(AppDbContext db)
     Console.WriteLine("──────────────────────────────────────────────");
     foreach (var n in nodes)
         Console.WriteLine($"{n.Id,3}  {n.Type,-10}  {n.ZoneId,4}   {n.Name}");
+
+    Console.WriteLine();
+    Console.ForegroundColor = ConsoleColor.DarkGray;
+    Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
+    Console.ResetColor();
+    Console.ReadKey(intercept: true);
 }
 
 // Korábbi futtatások
@@ -252,7 +275,6 @@ static async Task ShowPastRunsAsync(AppDbContext db)
             return;
         }
 
-        // Menüpontok a futásokból
         var items = runs.Select(r =>
             $"{r.RunAt:yyyy-MM-dd HH:mm}  |  " +
             $"OK: {r.Delivered}/{r.Total}  " +
@@ -276,7 +298,6 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
     Console.ResetColor();
     Console.WriteLine();
 
-    // Összesítő fejléc
     Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine($"  Összes: {run.Total}  |  " +
                       $"Kézbesítve: {run.Delivered}  |  " +
@@ -300,7 +321,6 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
     }
     else
     {
-        // Fejléc
         Console.ForegroundColor = ConsoleColor.DarkGray;
         Console.WriteLine($"  {"Rendelés",-12} {"Ügyfél",-25} {"Futár",-25} {"Kézb.",-7} {"Késő",-6} {"Ideális",-9} {"Tényleges"}");
         Console.WriteLine($"  {"─────────────────────────────────────────────────────────────────────────────"}");
@@ -308,7 +328,6 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
 
         foreach (var log in logs)
         {
-            // Státusz szín
             if (!log.WasDelivered)
                 Console.ForegroundColor = ConsoleColor.Red;
             else if (log.WasLate)
@@ -328,17 +347,13 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
         Console.ResetColor();
         Console.WriteLine();
 
-        // Mini összesítő a logokból
         int okCount = logs.Count(l => l.WasDelivered && !l.WasLate);
         int lateCount = logs.Count(l => l.WasDelivered && l.WasLate);
         int failCount = logs.Count(l => !l.WasDelivered);
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write($"Sikeres: {okCount}  ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write($"Késő: {lateCount}  ");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"Nem kézbesítve: {failCount}");
+        Console.ForegroundColor = ConsoleColor.Green; Console.Write($"Sikeres: {okCount}  ");
+        Console.ForegroundColor = ConsoleColor.Yellow; Console.Write($"Késő: {lateCount}  ");
+        Console.ForegroundColor = ConsoleColor.Red; Console.WriteLine($"Nem kézbesítve: {failCount}");
         Console.ResetColor();
     }
 
