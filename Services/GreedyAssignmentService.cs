@@ -3,6 +3,9 @@ using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Services;
 
+/// <summary>
+/// Rendeléseket rendel hozzá futárokhoz a legközelebbi szabad futár alapján (mohó).
+/// </summary>
 public class GreedyAssignmentService
 {
     private readonly CityGraph _graph;
@@ -10,13 +13,8 @@ public class GreedyAssignmentService
     public GreedyAssignmentService(CityGraph graph) => _graph = graph;
 
     /// <summary>
-    /// Egy rendeléshez megkeresi és hozzárendeli a legjobb futárt.
-    ///
-    /// Szűrési feltételek:
-    ///   1. Van szabad hely (HasRoom)
-    ///   2. Dolgozik ebben a zónában (CanServe)
-    ///
-    /// Kiválasztás: Dijkstra-távolság alapján a legközelebbi.
+    /// A legközelebbi, szabad, zónában dolgozó futárt rendeli a rendeléshez.
+    /// Visszatér <c>null</c>-lal, ha nincs megfelelő futár.
     /// </summary>
     public Courier? AssignOne(Order order, List<Courier> couriers)
     {
@@ -29,17 +27,13 @@ public class GreedyAssignmentService
             if (!courier.HasRoom) continue;
             if (!courier.CanServe(order.ZoneId)) continue;
 
-            // Dijkstra: futár jelenlegi pozíciója → rendelés célcsúcsa
             // 1) Legközelebbi raktár a futár aktuális pozíciójához
             int warehouseId = _graph.FindNearestWarehouse(courier.CurrentNodeId, courier.ZoneIds);
-
             // 2) Idő futár -> raktár
             var (_, toWarehouseTime) = _graph.FindShortestPath(courier.CurrentNodeId, warehouseId);
-
             // 3) Idő raktár -> cím
             var (_, warehouseToAddressTime) = _graph.FindShortestPath(warehouseId, order.AddressNodeId);
-
-            // 4) Összesített idő: vissza telephelyre, onnan kiviszi
+            // 4) Összesített idő
             int totalTime = toWarehouseTime + warehouseToAddressTime;
 
             if (totalTime == int.MaxValue) continue;
@@ -62,7 +56,8 @@ public class GreedyAssignmentService
     }
 
     /// <summary>
-    /// Az összes Pending rendelés hozzárendelése (tömeges).
+    /// Az összes <see cref="OrderStatus.Pending"/> rendelést hozzárendelése.
+    /// Visszatér a sikeresen hozzárendelt rendelések számával.
     /// </summary>
     public int AssignAll(List<Order> orders, List<Courier> couriers)
     {

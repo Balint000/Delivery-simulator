@@ -3,6 +3,10 @@ using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Services;
 
+/// <summary>
+/// Nearest Neighbor heurisztikával optimalizálja a kézbesítési sorrendet.
+/// Nem garantál optimális megoldást, de gyors közelítést ad (TSP közelítő).
+/// </summary>
 public class NearestNeighborService
 {
     private readonly CityGraph _graph;
@@ -10,11 +14,11 @@ public class NearestNeighborService
     public NearestNeighborService(CityGraph graph) => _graph = graph;
 
     /// <summary>
-    /// Rendelések optimális sorrendbe rendezése Nearest Neighbor-rel.
+    /// Rendezi a rendeléseket úgy, hogy mindig a jelenlegi pozícióhoz
+    /// legközelebbi következő megálló kerüljön sorra.
     /// </summary>
-    /// <param name="startNodeId">Kiindulási csúcs (raktár)</param>
-    /// <param name="orders">Kézbesítendő rendelések</param>
-    /// <returns>Optimalizált sorrendű lista</returns>
+    /// <param name="startNodeId">A futár induló csúcsa (általában a raktár).</param>
+    /// <param name="orders">A kézbesítendő rendelések.</param>
     public List<Order> Optimize(int startNodeId, List<Order> orders)
     {
         // 0 vagy 1 rendelés → nincs mit rendezni
@@ -40,7 +44,7 @@ public class NearestNeighborService
                 }
             }
 
-            if (nearest == null) break;
+            if (nearest == null) break; // el nem érhető rendelések maradtak
 
             // Kiválasztjuk és lépünk a következő pozícióra
             optimized.Add(nearest);
@@ -48,8 +52,7 @@ public class NearestNeighborService
             currentNode = nearest.AddressNodeId;
         }
 
-        // Ha maradtak el nem érhető rendelések, fűzzük a végére
-        optimized.AddRange(remaining);
+        optimized.AddRange(remaining); // el nem érhető rendelések a lista végére kerülnek
         return optimized;
     }
 }

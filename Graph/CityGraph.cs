@@ -23,9 +23,9 @@ public class CityGraph
     /// </summary>
     public (List<int> path, int totalMinutes) FindShortestPath(int from, int to)
     {
-        var dist = new Dictionary<int, int>();
-        var prev = new Dictionary<int, int>();
-        var done = new HashSet<int>();
+        var dist = new Dictionary<int, int>(); // Minden csúcshoz: eddig mekkora a legrövidebb távolság
+        var prev = new Dictionary<int, int>(); // Minden csúcshoz: melyik csúcsból érkezett
+        var done = new HashSet<int>(); // Feldolgozott csúcsok; egyedi elemek
 
         foreach (var n in Nodes) { dist[n.Id] = int.MaxValue; prev[n.Id] = -1; }
         dist[from] = 0;
@@ -33,7 +33,7 @@ public class CityGraph
         int nodeCount = Nodes.Count;
         for (int step = 0; step < nodeCount - 1; step++)
         {
-            // Legközelebbi nem feldolgozott csúcs
+            // Legközelebbi még nem feldolgozott csúcs (mohó)
             int u = -1;
             int uDist = int.MaxValue;
             foreach (var kv in dist)

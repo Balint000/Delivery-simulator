@@ -4,19 +4,20 @@ using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Services;
 
+/// <summary>
+/// Egyetlen rendelés fizikai kézbesítését szimulálja:
+/// raktárba menet, csomagfelvétel, kézbesítés, késésellenőrzés.
+/// </summary>
 public class DeliverySimulationService
 {
     private readonly CityGraph _graph;
     private readonly LiveConsole _console;
 
-    // Késési küszöb: 10%-os tolerancia.
-    // Ha a tényleges idő > ideális × 1.10, akkor "késett".
-    // Pl. ideális 10 perc → csak 11+ perctől számít késésnek.
+    // Tényleges idő ennél nagyobb arányban térhet el az ideálistól → késés
     private const double DelayThreshold = 1.10;
 
-    // Szimulációs sebesség: ennyi valós ms felel meg 1 szimulált percnek.
-    // Csökkentésével gyorsítható a szimuláció (pl. 100 ms = gyors teszt).
-    private const int MsPerMinute = 400;
+    // 1 szimulált perc = ennyi valós ms
+    private const int MsPerMinute = 500;
 
     public DeliverySimulationService(CityGraph graph, LiveConsole console)
     {
@@ -25,20 +26,9 @@ public class DeliverySimulationService
     }
 
     /// <summary>
-    /// Egy futár egyetlen rendelésének teljes aszinkron szimulációja.
-    ///
-    /// A metódus végigmegy a teljes kézbesítési folyamaton:
-    ///   1. Raktár megkeresése
-    ///   2. Mozgás a raktárhoz
-    ///   3. Csomag felvétel
-    ///   4. Ideális menetidő kiszámítása (összehasonlítási alap)
-    ///   5. Mozgás a kézbesítési címre
-    ///   6. Kézbesítés rögzítése + statisztikák frissítése
-    ///   7. Késés ellenőrzése + értesítés
+    /// Lefuttatja egy rendelés teljes kézbesítési folyamatát aszinkron módon.
+    /// A futár pozíciója és statisztikái frissülnek a futás során.
     /// </summary>
-    /// <param name="courier">A kézbesítést végző futár</param>
-    /// <param name="order">A kézbesítendő rendelés</param>
-    /// <param name="ct">Lemondási token (Ctrl+C kezeléshez)</param>
     public async Task SimulateAsync(
         Courier courier,
         Order order,
@@ -47,16 +37,14 @@ public class DeliverySimulationService
         // Összegyűjtjük a tényleges (forgalommal terhelt) menetidőt
         int totalActual = 0;
 
-        // ── 1. Legközelebbi raktár meghatározása ────────
-        // A futár zónáit figyelembe vesszük: előnyben részesítjük
-        // a saját zónájában lévő raktárt (FindNearestWarehouse belső logikája)
+        // 1. Legközelebbi raktár meghatározása
         int warehouseId = _graph.FindNearestWarehouse(
             courier.CurrentNodeId,
             courier.ZoneIds);
 
         var warehouse = _graph.GetNode(warehouseId)!;
 
-        // ── 2. Futár → Raktár ───────────────────────────
+        // 2. Futár → Raktár
         // Ha a futár már a raktárban van, kihagyjuk ezt a lépést
         if (courier.CurrentNodeId != warehouseId)
         {
@@ -76,7 +64,7 @@ public class DeliverySimulationService
             totalActual += whTime;
         }
 
-        // ── 3. Csomag felvétel ──────────────────────────
+        // 3. Csomag felvétel
         // Státusz váltás: a rendelés most úton van
         order.Status = OrderStatus.InTransit;
 
@@ -87,17 +75,15 @@ public class DeliverySimulationService
         _console.LogEvent("pickup",
             $"{courier.Name} felvette: {order.Number} ({order.Customer})");
 
-        // Kis szünet a csomagfelvételhez (valós rakodási idő szimulációja)
+        // Kis szünet a csomagfelvételhez (rakodási idő szimulációja)
         await Task.Delay(300, ct);
 
-        // ── 4. Ideális menetidő kiszámítása ─────────────
-        // IdealTime() forgalom NÉLKÜL fut — ez az összehasonlítási alap.
-        // Ha a tényleges idő ennél >10%-kal több → késés.
+        // 4. Ideális menetidő kiszámítása
         int idealWh = _graph.IdealTime(courier.CurrentNodeId, warehouseId);
         int idealDel = _graph.IdealTime(warehouseId, order.AddressNodeId);
         order.IdealMinutes = idealWh + idealDel;
 
-        // ── 5. Raktár → Kézbesítési cím ─────────────────
+        // 5. Raktár → Kézbesítési cím
         var destNode = _graph.GetNode(order.AddressNodeId);
 
         // Konzol frissítése: "kézbesítés" státusz, ETA megjelenítése
@@ -110,11 +96,11 @@ public class DeliverySimulationService
         // Dijkstra: legrövidebb út a raktártól a kézbesítési címig
         var (delivPath, delivTime) = _graph.FindShortestPath(warehouseId, order.AddressNodeId);
 
-        // Útvonal bejárása forgalommal (ez ad késést ha torlódás van)
+        // Útvonal bejárása forgalommal
         await TraversePath(courier, delivPath, ct);
         totalActual += delivTime;
 
-        // ── 6. Kézbesítés sikeres ───────────────────────
+        // 6. Kézbesítés sikeres
         order.Status = OrderStatus.Delivered;
         order.ActualMinutes = totalActual;
 
@@ -128,8 +114,7 @@ public class DeliverySimulationService
         courier.DeliveriesCompleted++;
         courier.TotalTimeMinutes += totalActual;
 
-        // ── 7. Késés ellenőrzés + értesítés ────────────
-        // Késett-e: tényleges idő meghaladja-e az ideális × küszöb értéket?
+        // 7. Késés ellenőrzés + értesítés
         bool late = totalActual > (order.IdealMinutes ?? 0) * DelayThreshold;
 
         if (late)
@@ -137,14 +122,14 @@ public class DeliverySimulationService
             order.WasLate = true;
             courier.LateDeliveries++;
 
-            // Késés mértéke percben (ideálistól való eltérés)
+            // Késés mértéke percben
             int lateMins = totalActual - (order.IdealMinutes ?? 0);
 
             _console.LogNotification(order.Customer, order.Number, lateMins);
         }
         else
         {
-            // Sikeres, időbeni kézbesítés — zöld esemény az eseménynaplóban
+            // Sikeres, időbeni kézbesítés
             _console.LogEvent("delivery",
                 $"{courier.Name} → {order.Customer} ({order.Number}) " +
                 $"| {totalActual} perc");
@@ -156,45 +141,29 @@ public class DeliverySimulationService
             completedCount: courier.DeliveriesCompleted);
     }
 
-    // ── Privát: útvonal bejárása lépésről lépésre ──────
+    // Bejárja az útvonalat élről élre; minden lépésnél frissíti a forgalmat és vár.
 
-    /// <summary>
-    /// Szimulált mozgás egy útvonal mentén, élről élre.
-    ///
-    /// Minden lépésnél (él bejárásánál):
-    ///   1. UpdateTraffic(): forgalom véletlenszerűen változik
-    ///   2. Task.Delay(): valós várakozás (forgalommal arányos)
-    ///   3. courier.CurrentNodeId frissítése az új pozícióra
-    ///
-    /// A CancellationToken leállítja a mozgást ha Ctrl+C érkezik.
-    /// </summary>
-    /// <param name="courier">A mozgó futár (pozícióját frissítjük)</param>
-    /// <param name="path">Csúcsok Id listája (Dijkstra adja vissza)</param>
-    /// <param name="ct">Lemondási token</param>
     private async Task TraversePath(Courier courier, List<int> path, CancellationToken ct)
     {
         // path[0] = kiindulás, path[^1] = cél
         // Minden szomszédos pár egy élt jelent
         for (int i = 0; i < path.Count - 1; i++)
         {
-            // Lemondás ellenőrzése minden él előtt
+            // CTRL + C ellenőrzés
             ct.ThrowIfCancellationRequested();
 
             int from = path[i];
             int to = path[i + 1];
 
-            // Forgalom frissítése: véletlenszerű változás minden lépésnél
-            // Ez okozza a dinamikus késéseket a szimulációban
+            // Forgalom frissítése
             _graph.UpdateTraffic();
 
             // Megkeressük a konkrét él objektumot a menetidőhöz
             var edge = _graph.Edges.FirstOrDefault(e => e.From == from && e.To == to);
 
-            // CurrentMinutes = IdealMinutes × TrafficMultiplier (forgalommal terhelt)
             int ms = (edge?.CurrentMinutes ?? 1) * MsPerMinute;
 
-            // Futár pozíciójának frissítése még a Delay előtt
-            // (a konzol azonnal mutatja az új helyszínt)
+            // Futár pozíciójának frissítése
             courier.CurrentNodeId = to;
 
             // Aszinkron várakozás: 1 szimulált perc = MsPerMinute valós ms

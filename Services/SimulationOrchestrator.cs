@@ -6,6 +6,10 @@ using DeliverySimulator.Database.Models;
 
 namespace DeliverySimulator.Services;
 
+/// <summary>
+/// A teljes szimuláció vezérlője;
+/// hozzárendelés-párhuzamosFutárok-összesítés
+/// </summary>
 public class SimulationOrchestrator
 {
     private readonly CityGraph _graph;
@@ -29,7 +33,8 @@ public class SimulationOrchestrator
     }
 
     /// <summary>
-    /// Teljes szimuláció futtatása.
+    /// Futtatja a szimulációt;
+    /// (greedy hozzárendelés → párhuzamos futárhurok → összesítés)
     /// </summary>
     public async Task<SimResult> RunAsync(
         List<Courier> couriers,
@@ -38,25 +43,25 @@ public class SimulationOrchestrator
     {
         var sw = Stopwatch.StartNew();
 
-        // ── 1. Initial batch assignment ─────────────────
+        // 1. Inicializálás
         int assigned = _greedy.AssignAll(orders, couriers);
         _console.LogEvent("start",
             $"Hozzárendelve: {assigned}/{orders.Count} rendelés | " +
             $"Queue-ban: {orders.Count(o => o.Status == OrderStatus.Pending)}");
 
-        // ── 2. Maradék → ConcurrentQueue ────────────────
+        // 2.1 Maradék rendelés → ConcurrentQueue
         var queue = new ConcurrentQueue<Order>(
             orders.Where(o => o.Status == OrderStatus.Pending));
 
         var orderMap = orders.ToDictionary(o => o.Id);
 
-        // ── 3. TPL: minden futár párhuzamosan indul ──────
+        // 2.2 TPL
         await Task.WhenAll(
             couriers.Select(c => CourierLoopAsync(c, queue, orderMap, ct)));
 
         sw.Stop();
 
-        // ── 4. Összesítés ────────────────────────────────
+        // 4. Összesítés
         return new SimResult(
             Total: orders.Count,
             Delivered: orders.Count(o => o.Status == OrderStatus.Delivered),
@@ -66,7 +71,8 @@ public class SimulationOrchestrator
     }
 
     /// <summary>
-    /// Egy futár ,,életciklusa"
+    /// Egy futár teljes életciklusa;
+    /// batch feldolgozás, queue-feltöltés, leállás
     /// </summary>
     private async Task CourierLoopAsync(
         Courier courier,
@@ -78,7 +84,7 @@ public class SimulationOrchestrator
         {
             ct.ThrowIfCancellationRequested();
 
-            // Snapshot: .ToList() azért kell, mert a szimuláció
+            // .ToList() azért kell, mert a szimuláció
             // közben eltávolítja az elemet az AssignedOrderIds-ból
             var batch = courier.AssignedOrderIds
                 .ToList()
@@ -108,9 +114,8 @@ public class SimulationOrchestrator
     }
 
     /// <summary>
-    /// Futár feltöltése a ConcurrentQueue-ból.
-    /// Csak a futár zónájába eső rendeléseket veszi fel.
-    /// Rossz zónásakat visszateszi a sor végére.
+    /// A futár szabad kapacitását tölti fel a várakozó sorból.
+    /// Más zónás rendeléseket visszatesz a sor végére.
     /// </summary>
     private List<Order> Refill(
         Courier courier,
@@ -132,8 +137,7 @@ public class SimulationOrchestrator
                 courier.AssignedOrderIds.Add(order.Id);
                 assigned.Add(order);
 
-                _console.LogEvent("refill",
-                    $"📥 {order.Number} → {courier.Name} (queue-ból)");
+                _console.LogEvent("refill", $"📥 {order.Number} → {courier.Name} (queue-ból)");
             }
             else
             {
@@ -147,9 +151,8 @@ public class SimulationOrchestrator
 }
 
 /// <summary>
-/// A szimuláció végeredménye.
-/// record = immutable adatosztály, automatikus ToString/Equals.
-/// </summary>
+/// A szimuláció összesített végeredménye.
+/// </summary
 public record SimResult(
     int Total,
     int Delivered,
