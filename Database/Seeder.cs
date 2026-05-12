@@ -9,15 +9,18 @@ public static class Seeder
 {
     public static async Task SeedIfEmptyAsync(AppDbContext db)
     {
-        if (await db.Cities.AnyAsync()) return;
+        // if (await db.Cities.AnyAsync()) return;
 
         var basePath = Path.Combine(AppContext.BaseDirectory, "Data");
         if (!Directory.Exists(basePath)) return;
+
+        var existingCityNames = await db.Cities.Select(c => c.Name).ToHashSetAsync();
 
         // Minden almappát megnézzük
         foreach (var dir in Directory.GetDirectories(basePath))
         {
             var cityFile = Path.Combine(dir, "city.json");
+            if (!File.Exists(cityFile)) continue;
             var courierFile = Path.Combine(dir, "couriers.json");
             var orderFile = Path.Combine(dir, "orders.json");
 
@@ -25,6 +28,7 @@ public static class Seeder
 
             var cityJson = JsonDocument.Parse(await File.ReadAllTextAsync(cityFile)).RootElement;
             var cityName = cityJson.GetProperty("cityName").GetString() ?? Path.GetFileName(dir);
+            if (existingCityNames.Contains(cityName)) continue;
 
             var city = new City { Name = cityName };
             db.Cities.Add(city);
