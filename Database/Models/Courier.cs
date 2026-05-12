@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DeliverySimulator.Database.Models;
 
 /// <summary>
-/// Egy futár. Zónájában dolgozik, max. MaxCapacity csomagot vihet egyszerre.
+/// Egy futár.
+/// Adott zóna(k)ban dolgozik, max. MaxCapacity csomagot vihet egyszerre.
 /// </summary>
 public class Courier
 {
@@ -24,6 +25,5 @@ public class Courier
     public bool HasRoom => AssignedOrderIds.Count < MaxCapacity;
     public int FreeSlots => MaxCapacity - AssignedOrderIds.Count;
     public bool CanServe(int zoneId) => ZoneIds.Contains(zoneId);
-    public double AvgTime => DeliveriesCompleted > 0
-                                    ? (double)TotalTimeMinutes / DeliveriesCompleted : 0;
+    public double AvgTime => DeliveriesCompleted > 0 ? (double)TotalTimeMinutes / DeliveriesCompleted : 0;
 }

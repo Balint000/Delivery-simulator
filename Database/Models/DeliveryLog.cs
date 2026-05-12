@@ -5,7 +5,6 @@ namespace DeliverySimulator.Database.Models;
 /// <summary>
 /// Egy rendelés kézbesítésének részletes naplója.
 /// Minden futáshoz tartozik annyi DeliveryLog, ahány rendelés volt.
-/// Ebből lehet utólag riportot készíteni.
 /// </summary>
 public class DeliveryLog
 {

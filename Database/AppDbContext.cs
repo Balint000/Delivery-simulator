@@ -27,7 +27,7 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder model)
     {
-        // Node Id a JSON-ból jön (0-13), nem auto-generált
+        // Node Id a JSON-ból jön (0-13)
         model.Entity<Node>()
              .Property(n => n.Id)
              .ValueGeneratedNever();

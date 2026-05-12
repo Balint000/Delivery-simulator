@@ -5,7 +5,7 @@ namespace DeliverySimulator.Display;
 
 public static class Reports
 {
-    // ── 1. Késési riport ─────────────────────────────────
+    // 1. Késési riport
     // Késett rendelések listája, késés szerint csökkentő sorrendben.
     public static void PrintDelayReport(List<Order> orders, List<Courier> couriers)
     {
@@ -41,7 +41,7 @@ public static class Reports
         }
     }
 
-    // ── 2. Futár teljesítmény rangsor ────────────────────
+    // 2. Futár teljesítmény rangsor
     // Rendezés: legtöbb kézbesítés, legkevesebb késés, leggyorsabb átlag.
     public static void PrintCourierReport(List<Courier> couriers)
     {
@@ -85,7 +85,7 @@ public static class Reports
         }
     }
 
-    // ── 3. Zónánkénti terhelés ────────────────────────────
+    // 3. Zónánkénti terhelés
     // Zónánkénti statisztika: rendelések száma, hatékonyság, futárok.
     public static void PrintZoneReport(List<Order> orders, List<Courier> couriers)
     {

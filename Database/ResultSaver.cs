@@ -15,7 +15,7 @@ public static class ResultSaver
         List<Order> orders,
         List<Courier> couriers)
     {
-        // ── 1. Összesített futás rekord ──────────────────
+        // 1. Összesített futás rekord
         var run = new SimulationRun
         {
             CityId = cityId,
@@ -30,7 +30,7 @@ public static class ResultSaver
         db.SimulationRuns.Add(run);
         await db.SaveChangesAsync(); // kell a run.Id-hez a logokhoz
 
-        // ── 2. Per-rendelés napló ────────────────────────
+        // 2. Per-rendelés napló
         var courierMap = couriers.ToDictionary(c => c.Id);
 
         foreach (var order in orders)

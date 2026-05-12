@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DeliverySimulator.Database.Models;
 
 /// <summary>
-/// Egy él a városgráfban — két csúcs közötti út menetideje.
+/// Egy él a városgráfban = két csúcs közötti út menetideje.
 /// A forgalom (TrafficMultiplier) módosítja az aktuális időt.
 /// </summary>
 public class Edge
@@ -14,6 +14,6 @@ public class Edge
     public int To { get; set; }
     public int IdealMinutes { get; set; }   // forgalom nélküli alap
     [NotMapped] public double TrafficMultiplier { get; set; } = 1.0;
-    // Az aktuális (forgalommal számolt) menetidő
-    [NotMapped] public int CurrentMinutes => (int)(IdealMinutes * TrafficMultiplier);
+
+    [NotMapped] public int CurrentMinutes => (int)(IdealMinutes * TrafficMultiplier); // Az aktuális forgalommal számolt menetidő
 }

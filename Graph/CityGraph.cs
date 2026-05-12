@@ -5,7 +5,7 @@ namespace DeliverySimulator.Graph;
 
 public class CityGraph
 {
-    // ── Adatok ─────────────────────────────────────────
+    // Adatok
     public List<Node> Nodes { get; } = [];
     public List<Edge> Edges { get; } = [];
 
@@ -16,8 +16,6 @@ public class CityGraph
         Nodes.AddRange(nodes);
         Edges.AddRange(edges);
     }
-
-    // ── Dijkstra ────────────────────────────────────────
 
     /// <summary>
     /// Legrövidebb útvonal keresése Dijkstra-val, aktuális forgalommal.

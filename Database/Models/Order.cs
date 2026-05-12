@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DeliverySimulator.Database.Models;
 
 /// <summary>
-/// Egy kézbesítési megrendelés.
+/// Egy rendelés.
 /// </summary>
 public class Order
 {

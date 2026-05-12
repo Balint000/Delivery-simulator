@@ -14,7 +14,7 @@ public static class Seeder
         var basePath = Path.Combine(AppContext.BaseDirectory, "Data");
         if (!Directory.Exists(basePath)) return;
 
-        // Minden almappát végigmegyünk
+        // Minden almappát megnézzük
         foreach (var dir in Directory.GetDirectories(basePath))
         {
             var cityFile = Path.Combine(dir, "city.json");
@@ -32,7 +32,7 @@ public static class Seeder
 
             // Nodes + Edges
             // Node Id-k: városonként újraindul 0-tól,
-            // de DB-ben globálisan egyedinek kell lenniük → offsetelünk
+            // de DB-ben globálisan egyedinek kell lenniük → offset-et rakunk be
             int nodeOffset = (city.Id - 1) * 1000;
 
             var nodes = cityJson.GetProperty("nodes").EnumerateArray().ToList();

@@ -25,7 +25,7 @@ public class LiveConsole
     // volatile: azonnal látható legyen az összes szálból.
     private volatile bool _inputMode = false;
 
-    // ── Inicializálás ───────────────────────────────────
+    // Inicializálás
 
     public void Init(string title, int courierCount)
     {
@@ -66,7 +66,6 @@ public class LiveConsole
             for (int i = 0; i < MaxNotifications; i++)
                 Console.WriteLine(new string(' ', Console.WindowWidth - 1));
 
-            // Input sáv helye: a panelek után
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("  [Ctrl+C] Leállítás");
@@ -76,7 +75,7 @@ public class LiveConsole
         }
     }
 
-    // ── Futár státusz frissítés ─────────────────────────
+    // Futár státusz frissítés
 
     public void UpdateCourier(
         int courierId,
@@ -106,7 +105,7 @@ public class LiveConsole
         }
     }
 
-    // ── Eseménynapló ────────────────────────────────────
+    // Eseménynapló
 
     public void LogEvent(string type, string message)
     {
@@ -143,7 +142,7 @@ public class LiveConsole
         }
     }
 
-    // ── Értesítési panel ────────────────────────────────
+    // Értesítési panel
 
     public void LogNotification(string customer, string orderNumber, int lateMinutes)
     {
@@ -164,7 +163,7 @@ public class LiveConsole
         }
     }
 
-    // ── Szimuláció vége ─────────────────────────────────
+    // Szimuláció vége
 
     public void Finish()
     {
@@ -177,9 +176,9 @@ public class LiveConsole
         }
     }
 
-    // ── Segédmetódusok ──────────────────────────────────
+    // Segédmetódusok
 
-    private void RedrawPanel(
+    private static void RedrawPanel(
         int panelRow,
         List<string> lines,
         int maxLines,
