@@ -35,7 +35,7 @@ while (true)
         case 1: await AddOrderAsync(db); break;
         case 2: await ListPlacesAsync(db); break;
         case 3: await ShowPastRunsAsync(db); break;
-        case 4:
+        case 4: await db.Database.MigrateAsync();
             await Seeder.SeedIfEmptyAsync(db);
             Console.WriteLine("  Frissítés kész.");
             Console.WriteLine();
@@ -135,7 +135,7 @@ static async Task RunSimulationAsync(AppDbContext db)
         liveConsole.LogEvent("done", $"Kész! {simResult.Delivered}/{simResult.Total} kézbesítve");
 
         await ResultSaver.SaveAsync(db, city.Id, simResult, orders, couriers);
-        liveConsole.LogEvent("saved", "💾 Futás elmentve az adatbázisba.");
+        liveConsole.LogEvent("saved", "Futás elmentve az adatbázisba.");
     }
     catch (OperationCanceledException)
     {
@@ -167,11 +167,53 @@ static async Task AddOrderAsync(AppDbContext db)
     Console.ResetColor();
     Console.WriteLine();
 
-    Console.Write("Ügyfél neve: ");
-    var customer = Console.ReadLine() ?? "";
+    string customer;
+    while (true)
+    {
+        Console.Write("Ügyfél neve (max 25 karakter): ");
+        customer = Console.ReadLine()?.Trim() ?? "";
 
-    Console.Write("Cím (szabad szöveg): ");
-    var address = Console.ReadLine() ?? "";
+        // Ellenőrzés
+        if (string.IsNullOrWhiteSpace(customer))
+        {
+            Console.WriteLine("Hiba: A név nem lehet üres!");
+            continue;
+        }
+
+        if (customer.Length > 25)
+        {
+            Console.WriteLine("Hiba: A név maximum 25 karakter lehet!");
+            continue;
+        }
+
+        break;
+    }
+
+    string address;
+    while (true)
+    {
+        Console.Write("Cím (max 30 karakter): ");
+        address = Console.ReadLine()?.Trim() ?? "";
+
+        // Ellenőrzés
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            Console.WriteLine("Hiba: A cím nem lehet üres!");
+            continue;
+        }
+
+        if (address.Length > 30)
+        {
+            Console.WriteLine("Hiba: A cím maximum 30 karakter lehet!");
+            continue;
+        }
+
+        break;
+    }
+
+    Console.WriteLine("\nRögzített adatok:");
+    Console.WriteLine($"Név: {customer}");
+    Console.WriteLine($"Cím: {address}");
 
     var deliveryNodes = await db.Nodes
         .Where(n => n.CityId == city.Id && n.Type == "Delivery")
@@ -189,7 +231,7 @@ static async Task AddOrderAsync(AppDbContext db)
         .Select(n => $"{n.Name}  (zóna: {n.ZoneId?.ToString() ?? "-"})")
         .ToList();
 
-    int nodeIndex = ConsoleMenu.Show("Cél hely kiválasztása", nodeItems);
+    int nodeIndex = ConsoleMenu.Show($"Cél hely kiválasztása\n\nRögzített adatok:\n\nNév: {customer}\nCím: {address}", nodeItems);
     if (nodeIndex < 0) return;
 
     var node = deliveryNodes[nodeIndex];
@@ -301,6 +343,11 @@ static async Task ShowPastRunsAsync(AppDbContext db)
         if (runs.Count == 0)
         {
             Console.WriteLine("  Még nincs elmentett futás ehhez a városhoz.");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
+            Console.ResetColor();
+            Console.ReadKey(intercept: true);
             return;
         }
 
@@ -351,8 +398,8 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
     else
     {
         Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.WriteLine($"  {"Rendelés",-12} {"Ügyfél",-25} {"Futár",-25} {"Kézb.",-7} {"Késő",-6}");
-        Console.WriteLine($"  {"─────────────────────────────────────────────────────────────────────────────"}");
+        Console.WriteLine($"  {"Rendelés",-12} {"Ügyfél",-25} {"Futár",-15} {"Kézb.",-7} {"Késő",-6} {"Ideális",-9} {"Aktuális",-9}");
+        Console.WriteLine($"  {"──────────────────────────────────────────────────────────────────────────────────────────────────────",-12}");
         Console.ResetColor();
 
         foreach (var log in logs)
@@ -370,7 +417,7 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
             string ideal = log.IdealMinutes.HasValue ? $"{log.IdealMinutes}p" : "–";
             string actual = log.ActualMinutes.HasValue ? $"{log.ActualMinutes}p" : "–";
 
-            Console.WriteLine($"  {log.OrderNumber,-12} {log.Customer,-20} {courier,-15} {delivered,-7} {late,-6} {ideal,-9} {actual}");
+            Console.WriteLine($"  {log.OrderNumber,-12} {log.Customer,-20} {courier,-20} {delivered,-7} {late,-6} {ideal,-9} {actual}");
         }
 
         Console.ResetColor();

@@ -19,6 +19,7 @@ public static class Seeder
         // Minden almappát megnézzük
         foreach (var dir in Directory.GetDirectories(basePath))
         {
+            Console.WriteLine(dir);
             var cityFile = Path.Combine(dir, "city.json");
             if (!File.Exists(cityFile)) continue;
             var courierFile = Path.Combine(dir, "couriers.json");
