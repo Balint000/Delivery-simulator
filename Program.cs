@@ -36,13 +36,13 @@ while (true)
         case 2: await ListPlacesAsync(db); break;
         case 3: await ShowPastRunsAsync(db); break;
         case 4:
-            await Seeder.SeedIfEmptyAsync(db);
-            Console.WriteLine("  Frissítés kész.");
+            await db.Database.MigrateAsync();
+            await Seeder.RefreshAsync(db);
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
             Console.ResetColor();
-            Console.ReadKey(intercept: true); Console.WriteLine("Frissítés kész.");
+            Console.ReadKey(intercept: true);
             break;
     }
 }
