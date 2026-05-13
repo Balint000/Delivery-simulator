@@ -95,7 +95,7 @@ static async Task RunSimulationAsync(AppDbContext db)
     var greedy = new GreedyAssignmentService(graph);
     var nn = new NearestNeighborService(graph);
     var simulation = new DeliverySimulationService(graph, liveConsole);
-    var orchestrator = new SimulationOrchestrator(graph, greedy, nn, simulation, liveConsole);
+    var runner = new ParallelRunner(graph, greedy, nn, simulation, liveConsole);
 
     var courierIndexMap = couriers
         .OrderBy(c => c.Id)
@@ -131,7 +131,7 @@ static async Task RunSimulationAsync(AppDbContext db)
     SimResult simResult;
     try
     {
-        simResult = await orchestrator.RunAsync(couriers, orders, cts.Token);
+        simResult = await runner.RunAsync(couriers, orders, cts.Token);
         liveConsole.LogEvent("done", $"Kész! {simResult.Delivered}/{simResult.Total} kézbesítve");
 
         await ResultSaver.SaveAsync(db, city.Id, simResult, orders, couriers);
