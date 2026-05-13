@@ -135,7 +135,7 @@ static async Task RunSimulationAsync(AppDbContext db)
         liveConsole.LogEvent("done", $"Kész! {simResult.Delivered}/{simResult.Total} kézbesítve");
 
         await ResultSaver.SaveAsync(db, city.Id, simResult, orders, couriers);
-        liveConsole.LogEvent("saved", "💾 Futás elmentve az adatbázisba.");
+        liveConsole.LogEvent("saved", "Futás elmentve az adatbázisba.");
     }
     catch (OperationCanceledException)
     {

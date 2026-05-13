@@ -137,7 +137,7 @@ public class ParallelRunner
                 courier.AssignedOrderIds.Add(order.Id);
                 assigned.Add(order);
 
-                _console.LogEvent("refill", $"📥 {order.Number} → {courier.Name} (queue-ból)");
+                _console.LogEvent("refill", $" {order.Number} → {courier.Name} (queue-ból)");
             }
             else
             {
