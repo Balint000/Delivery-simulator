@@ -35,15 +35,9 @@ while (true)
         case 1: await AddOrderAsync(db); break;
         case 2: await ListPlacesAsync(db); break;
         case 3: await ShowPastRunsAsync(db); break;
-<<<<<<< HEAD
         case 4:
             await db.Database.MigrateAsync();
             await Seeder.RefreshAsync(db);
-=======
-        case 4: await db.Database.MigrateAsync();
-            await Seeder.SeedIfEmptyAsync(db);
-            Console.WriteLine("  Frissítés kész.");
->>>>>>> ad3c013cca16d91f9e8efae709a212fe8e83411c
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("  Nyomj meg egy billentyűt a főmenühöz...");
