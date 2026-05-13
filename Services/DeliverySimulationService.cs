@@ -141,6 +141,91 @@ public class DeliverySimulationService
             completedCount: courier.DeliveriesCompleted);
     }
 
+    /// <summary>
+    /// Egy teljes batch kézbesítése: egyszer megy raktárba, majd sorban kézbesít.
+    /// A batch sorrendjét a hívó (NearestNeighbor) már optimalizálta.
+    /// </summary>
+    public async Task SimulateBatchAsync(
+        Courier courier,
+        List<Order> orders,
+        CancellationToken ct = default)
+    {
+        if (orders.Count == 0) return;
+
+        // 1. Raktárba megy egyszer az egész batch-hez
+        int warehouseId = _graph.FindNearestWarehouse(courier.CurrentNodeId, courier.ZoneIds);
+        var warehouse = _graph.GetNode(warehouseId)!;
+
+        if (courier.CurrentNodeId != warehouseId)
+        {
+            _console.UpdateCourier(courier.Id, courier.Name,
+                "[Raktárba tart]", _graph.GetNode(courier.CurrentNodeId)?.Name ?? "?",
+                warehouse.Name, courier.DeliveriesCompleted);
+            _console.LogEvent("moving", $"{courier.Name} → raktárba: {warehouse.Name}");
+
+            var (whPath, _) = _graph.FindShortestPath(courier.CurrentNodeId, warehouseId);
+            await TraversePath(courier, whPath, ct);
+        }
+
+        // 2. Összes csomag felvétele egyszerre
+        foreach (var order in orders)
+            order.Status = OrderStatus.InTransit;
+
+        _console.LogEvent("pickup",
+            $"{courier.Name} felvette: {orders.Count} csomag " +
+            $"({string.Join(", ", orders.Select(o => o.Number))})");
+        await Task.Delay(300, ct);
+
+        // 3. Kézbesítés sorban — a sorrend már optimalizált
+        foreach (var order in orders)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            var destNode = _graph.GetNode(order.AddressNodeId);
+
+            // IdealMinutes: raktártól a célcímig (forgalom nélkül)
+            order.IdealMinutes = _graph.IdealTime(warehouseId, order.AddressNodeId);
+
+            int idealLeg = _graph.IdealTime(courier.CurrentNodeId, order.AddressNodeId);
+
+            _console.UpdateCourier(courier.Id, courier.Name,
+                "[Kézbesítés]", _graph.GetNode(courier.CurrentNodeId)?.Name ?? "?",
+                destNode?.Name ?? order.Address,
+                courier.DeliveriesCompleted,
+                estimatedMin: idealLeg);
+
+            var (delivPath, delivTime) = _graph.FindShortestPath(courier.CurrentNodeId, order.AddressNodeId);
+            await TraversePath(courier, delivPath, ct);
+
+            // Státusz és statisztikák frissítése
+            order.Status = OrderStatus.Delivered;
+            order.ActualMinutes = delivTime;
+            courier.CurrentNodeId = order.AddressNodeId;
+            courier.AssignedOrderIds.Remove(order.Id);
+            courier.DeliveriesCompleted++;
+            courier.TotalTimeMinutes += delivTime;
+
+            // Késés-ellenőrzés
+            bool late = delivTime > (order.IdealMinutes ?? 0) * DelayThreshold;
+            if (late)
+            {
+                order.WasLate = true;
+                courier.LateDeliveries++;
+                int lateMins = delivTime - (order.IdealMinutes ?? 0);
+                _console.LogNotification(order.Customer, order.Number, lateMins);
+            }
+            else
+            {
+                _console.LogEvent("delivery",
+                    $"{courier.Name} → {order.Customer} ({order.Number}) | {delivTime} perc");
+            }
+        }
+
+        _console.UpdateCourier(courier.Id, courier.Name,
+            "[Vár]", _graph.GetNode(courier.CurrentNodeId)?.Name ?? "?",
+            completedCount: courier.DeliveriesCompleted);
+    }
+
     // Bejárja az útvonalat élről élre; minden lépésnél frissíti a forgalmat és vár.
 
     private async Task TraversePath(Courier courier, List<int> path, CancellationToken ct)

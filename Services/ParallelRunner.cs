@@ -56,8 +56,7 @@ public class ParallelRunner
         var orderMap = orders.ToDictionary(o => o.Id);
 
         // 2.2 TPL
-        await Task.WhenAll(
-            couriers.Select(c => CourierLoopAsync(c, queue, orderMap, ct)));
+        await Task.WhenAll(couriers.Select(c => CourierLoopAsync(c, queue, orderMap, ct)));
 
         sw.Stop();
 
@@ -71,7 +70,7 @@ public class ParallelRunner
     }
 
     /// <summary>
-    /// Egy futár teljes életciklusa;
+    /// Egy futár ciklusa;
     /// batch feldolgozás, queue-feltöltés, leállás
     /// </summary>
     private async Task CourierLoopAsync(
@@ -100,14 +99,15 @@ public class ParallelRunner
             // Nearest Neighbor: optimális kézbesítési sorrend
             var optimizedBatch = _nn.Optimize(courier.CurrentNodeId, batch);
 
-            foreach (var order in optimizedBatch)
-            {
-                if (ct.IsCancellationRequested) break;
-                await _sim.SimulateAsync(courier, order, ct);
-            }
+            if (!ct.IsCancellationRequested) await _sim.SimulateBatchAsync(courier, optimizedBatch, ct);
 
-            if (!queue.IsEmpty)
-                Refill(courier, queue, orderMap);
+            //foreach (var order in optimizedBatch)
+            // {
+            //    if (ct.IsCancellationRequested) break;
+            //    await _sim.SimulateAsync(courier, order, ct);
+            // }
+
+            if (!queue.IsEmpty) Refill(courier, queue, orderMap);
 
             if (courier.AssignedOrderIds.Count == 0 && queue.IsEmpty) break;
         }
