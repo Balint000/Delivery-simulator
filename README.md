@@ -63,7 +63,7 @@ dotnet run --configuration Release
 ---
 
 ## Projekt struktúra
-
+`
 ```
 DeliverySimulator/
 ├── Data/
@@ -137,7 +137,7 @@ Kézbesítési rendelések. Az `addressNodeId` a célcsúcsra, a `zoneId` a zón
 
 | Konstans | Helye | Alapértelmezett | Leírás |
 |---|---|---|---|
-| `MsPerMinute` | `DeliverySimulationService.cs` | `400` | 1 szimulált perc = X ms valós időben |
+| `MsPerMinute` | `DeliverySimulationService.cs` | `500` | 1 szimulált perc = X ms valós időben |
 | `DelayThreshold` | `DeliverySimulationService.cs` | `1.10` | Késési küszöb (10% tolerancia) |
 
 ---
@@ -176,5 +176,5 @@ A szimuláció végén három riport jelenik meg a konzolon:
 
 ## Csapat
 
-@Balint000
-@Mogyi13
+`@Balint000`
+`@Mogyi13`

@@ -1,0 +1,142 @@
+{
+  "cityName": "Győr",
+  "nodes": [
+    { "id": 0, "name": "Raktár (Révfalu)", "type": "Warehouse", "zoneId": 1 },
+    { "id": 1, "name": "Révfalu lakótelep", "type": "Delivery", "zoneId": 1 },
+    {
+      "id": 2,
+      "name": "Széchenyi István Egyetem",
+      "type": "Delivery",
+      "zoneId": 1
+    },
+    { "id": 3, "name": "Duna-part sétány", "type": "Delivery", "zoneId": 1 },
+    {
+      "id": 4,
+      "name": "Junction Révfalu-híd",
+      "type": "Junction",
+      "zoneId": null
+    },
+
+    { "id": 5, "name": "Raktár (Belváros)", "type": "Warehouse", "zoneId": 2 },
+    { "id": 6, "name": "Széchenyi tér", "type": "Delivery", "zoneId": 2 },
+    {
+      "id": 7,
+      "name": "Baross út bevásárlóutca",
+      "type": "Delivery",
+      "zoneId": 2
+    },
+    { "id": 8, "name": "Vasútállomás", "type": "Delivery", "zoneId": 2 },
+    {
+      "id": 9,
+      "name": "Junction Belváros-központ",
+      "type": "Junction",
+      "zoneId": null
+    },
+
+    { "id": 10, "name": "Raktár (Sziget)", "type": "Warehouse", "zoneId": 3 },
+    {
+      "id": 11,
+      "name": "Sziget családi házas övezet",
+      "type": "Delivery",
+      "zoneId": 3
+    },
+    { "id": 12, "name": "Sziget ipari park", "type": "Delivery", "zoneId": 3 },
+    {
+      "id": 13,
+      "name": "Junction Sziget-híd",
+      "type": "Junction",
+      "zoneId": null
+    },
+
+    {
+      "id": 14,
+      "name": "Raktár (Gyárváros)",
+      "type": "Warehouse",
+      "zoneId": 4
+    },
+    { "id": 15, "name": "Audi gyár főkapu", "type": "Delivery", "zoneId": 4 },
+    {
+      "id": 16,
+      "name": "Gyárváros munkásszálló",
+      "type": "Delivery",
+      "zoneId": 4
+    },
+    {
+      "id": 17,
+      "name": "Logisztikai központ",
+      "type": "Delivery",
+      "zoneId": 4
+    },
+    {
+      "id": 18,
+      "name": "Junction Ipari körút",
+      "type": "Junction",
+      "zoneId": null
+    },
+
+    {
+      "id": 19,
+      "name": "Városi központi csomópont",
+      "type": "Junction",
+      "zoneId": null
+    },
+    {
+      "id": 20,
+      "name": "Junction Révfalu-belváros",
+      "type": "Junction",
+      "zoneId": null
+    },
+    {
+      "id": 21,
+      "name": "Junction Belváros-sziget",
+      "type": "Junction",
+      "zoneId": null
+    },
+    {
+      "id": 22,
+      "name": "Junction Belváros-gyárváros",
+      "type": "Junction",
+      "zoneId": null
+    }
+  ],
+  "edges": [
+    { "from": 0, "to": 1, "idealTimeMinutes": 4 },
+    { "from": 1, "to": 4, "idealTimeMinutes": 3 },
+    { "from": 0, "to": 2, "idealTimeMinutes": 6 },
+    { "from": 2, "to": 4, "idealTimeMinutes": 3 },
+    { "from": 3, "to": 4, "idealTimeMinutes": 4 },
+    { "from": 4, "to": 20, "idealTimeMinutes": 4 },
+
+    { "from": 5, "to": 6, "idealTimeMinutes": 3 },
+    { "from": 6, "to": 9, "idealTimeMinutes": 2 },
+    { "from": 5, "to": 7, "idealTimeMinutes": 4 },
+    { "from": 7, "to": 9, "idealTimeMinutes": 2 },
+    { "from": 5, "to": 8, "idealTimeMinutes": 5 },
+    { "from": 8, "to": 9, "idealTimeMinutes": 3 },
+    { "from": 9, "to": 19, "idealTimeMinutes": 3 },
+
+    { "from": 10, "to": 11, "idealTimeMinutes": 4 },
+    { "from": 10, "to": 12, "idealTimeMinutes": 3 },
+    { "from": 11, "to": 13, "idealTimeMinutes": 3 },
+    { "from": 12, "to": 13, "idealTimeMinutes": 2 },
+    { "from": 13, "to": 21, "idealTimeMinutes": 4 },
+
+    { "from": 14, "to": 15, "idealTimeMinutes": 5 },
+    { "from": 14, "to": 16, "idealTimeMinutes": 4 },
+    { "from": 14, "to": 17, "idealTimeMinutes": 6 },
+    { "from": 15, "to": 18, "idealTimeMinutes": 3 },
+    { "from": 16, "to": 18, "idealTimeMinutes": 3 },
+    { "from": 17, "to": 18, "idealTimeMinutes": 2 },
+    { "from": 18, "to": 22, "idealTimeMinutes": 5 },
+
+    { "from": 20, "to": 6, "idealTimeMinutes": 4 },
+    { "from": 20, "to": 2, "idealTimeMinutes": 5 },
+    { "from": 19, "to": 20, "idealTimeMinutes": 3 },
+    { "from": 19, "to": 21, "idealTimeMinutes": 4 },
+    { "from": 19, "to": 22, "idealTimeMinutes": 5 },
+    { "from": 21, "to": 7, "idealTimeMinutes": 4 },
+    { "from": 21, "to": 11, "idealTimeMinutes": 5 },
+    { "from": 22, "to": 8, "idealTimeMinutes": 6 },
+    { "from": 22, "to": 15, "idealTimeMinutes": 6 }
+  ]
+}

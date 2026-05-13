@@ -1,0 +1,197 @@
+[
+  {
+    "id": 1,
+    "number": "ORD-GYOR-001",
+    "customer": "Révfalu Rita",
+    "address": "Révfalu lakótelep 1.",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 2,
+    "number": "ORD-GYOR-002",
+    "customer": "Révfalu Rókus",
+    "address": "Révfalu lakótelep 12.",
+    "addressNodeId": 1,
+    "zoneId": 1
+  },
+  {
+    "id": 3,
+    "number": "ORD-GYOR-003",
+    "customer": "Egyetem Emese",
+    "address": "Széchenyi Egyetem Kollégium A",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 4,
+    "number": "ORD-GYOR-004",
+    "customer": "Egyetem Ernő",
+    "address": "Széchenyi Egyetem Laborépület",
+    "addressNodeId": 2,
+    "zoneId": 1
+  },
+  {
+    "id": 5,
+    "number": "ORD-GYOR-005",
+    "customer": "Duna-part Dóra",
+    "address": "Duna-part sétány 5.",
+    "addressNodeId": 3,
+    "zoneId": 1
+  },
+  {
+    "id": 6,
+    "number": "ORD-GYOR-006",
+    "customer": "Duna-part Dénes",
+    "address": "Duna-part sétány 18.",
+    "addressNodeId": 3,
+    "zoneId": 1
+  },
+
+  {
+    "id": 7,
+    "number": "ORD-GYOR-007",
+    "customer": "Belváros Borbála",
+    "address": "Széchenyi tér 3.",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 8,
+    "number": "ORD-GYOR-008",
+    "customer": "Belváros Boldizsár",
+    "address": "Széchenyi tér 8.",
+    "addressNodeId": 6,
+    "zoneId": 2
+  },
+  {
+    "id": 9,
+    "number": "ORD-GYOR-009",
+    "customer": "Baross Bea",
+    "address": "Baross út 10.",
+    "addressNodeId": 7,
+    "zoneId": 2
+  },
+  {
+    "id": 10,
+    "number": "ORD-GYOR-010",
+    "customer": "Baross Bálint",
+    "address": "Baross út 27.",
+    "addressNodeId": 7,
+    "zoneId": 2
+  },
+  {
+    "id": 11,
+    "number": "ORD-GYOR-011",
+    "customer": "Vasútállomás Vilmos",
+    "address": "Vasútállomás pénztár",
+    "addressNodeId": 8,
+    "zoneId": 2
+  },
+  {
+    "id": 12,
+    "number": "ORD-GYOR-012",
+    "customer": "Vasútállomás Violetta",
+    "address": "Vasútállomás gyorsétterem",
+    "addressNodeId": 8,
+    "zoneId": 2
+  },
+
+  {
+    "id": 13,
+    "number": "ORD-GYOR-013",
+    "customer": "Sziget Szilárd",
+    "address": "Sziget családi ház 3.",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 14,
+    "number": "ORD-GYOR-014",
+    "customer": "Sziget Szabina",
+    "address": "Sziget családi ház 24.",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 15,
+    "number": "ORD-GYOR-015",
+    "customer": "Ipari Irén",
+    "address": "Sziget ipari park 1. csarnok",
+    "addressNodeId": 12,
+    "zoneId": 3
+  },
+  {
+    "id": 16,
+    "number": "ORD-GYOR-016",
+    "customer": "Ipari Imre",
+    "address": "Sziget ipari park 5. csarnok",
+    "addressNodeId": 12,
+    "zoneId": 3
+  },
+  {
+    "id": 17,
+    "number": "ORD-GYOR-017",
+    "customer": "Sziget Sára",
+    "address": "Sziget családi ház 40.",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+  {
+    "id": 18,
+    "number": "ORD-GYOR-018",
+    "customer": "Sziget Soma",
+    "address": "Sziget családi ház 52.",
+    "addressNodeId": 11,
+    "zoneId": 3
+  },
+
+  {
+    "id": 19,
+    "number": "ORD-GYOR-019",
+    "customer": "Audi Ádám",
+    "address": "Audi gyár főkapu 1.",
+    "addressNodeId": 15,
+    "zoneId": 4
+  },
+  {
+    "id": 20,
+    "number": "ORD-GYOR-020",
+    "customer": "Audi Andrea",
+    "address": "Audi gyár logisztikai bejárat",
+    "addressNodeId": 15,
+    "zoneId": 4
+  },
+  {
+    "id": 21,
+    "number": "ORD-GYOR-021",
+    "customer": "Munkásszálló Máté",
+    "address": "Gyárváros munkásszálló 2. emelet",
+    "addressNodeId": 16,
+    "zoneId": 4
+  },
+  {
+    "id": 22,
+    "number": "ORD-GYOR-022",
+    "customer": "Munkásszálló Mira",
+    "address": "Gyárváros munkásszálló 5. emelet",
+    "addressNodeId": 16,
+    "zoneId": 4
+  },
+  {
+    "id": 23,
+    "number": "ORD-GYOR-023",
+    "customer": "Logisztika Lajos",
+    "address": "Logisztikai központ főraktár",
+    "addressNodeId": 17,
+    "zoneId": 4
+  },
+  {
+    "id": 24,
+    "number": "ORD-GYOR-024",
+    "customer": "Logisztika Lilla",
+    "address": "Logisztikai központ mellékraktár",
+    "addressNodeId": 17,
+    "zoneId": 4
+  }
+]

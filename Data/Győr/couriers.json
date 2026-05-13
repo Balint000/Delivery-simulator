@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Révfalu Róbert",
+    "currentNodeId": 0,
+    "zoneIds": [1],
+    "maxCapacity": 4
+  },
+  {
+    "id": 2,
+    "name": "Révfalu Regina",
+    "currentNodeId": 0,
+    "zoneIds": [1],
+    "maxCapacity": 3
+  },
+  {
+    "id": 3,
+    "name": "Belváros Bence",
+    "currentNodeId": 5,
+    "zoneIds": [2],
+    "maxCapacity": 3
+  },
+  {
+    "id": 4,
+    "name": "Belváros Blanka",
+    "currentNodeId": 5,
+    "zoneIds": [2],
+    "maxCapacity": 2
+  },
+  {
+    "id": 5,
+    "name": "Sziget Sándor",
+    "currentNodeId": 10,
+    "zoneIds": [3],
+    "maxCapacity": 3
+  },
+  {
+    "id": 6,
+    "name": "Sziget Szilvia",
+    "currentNodeId": 10,
+    "zoneIds": [3],
+    "maxCapacity": 2
+  },
+  {
+    "id": 7,
+    "name": "Kereszt Zoltán",
+    "currentNodeId": 9,
+    "zoneIds": [1, 2, 3],
+    "maxCapacity": 2
+  },
+  {
+    "id": 8,
+    "name": "Központ Katinka",
+    "currentNodeId": 10,
+    "zoneIds": [1, 2, 3],
+    "maxCapacity": 3
+  },
+  {
+    "id": 9,
+    "name": "Éjszakai Emese",
+    "currentNodeId": 5,
+    "zoneIds": [1, 2, 4],
+    "maxCapacity": 1
+  },
+  {
+    "id": 10,
+    "name": "Sűrű Sándor",
+    "currentNodeId": 11,
+    "zoneIds": [2, 3],
+    "maxCapacity": 2
+  }
+]
