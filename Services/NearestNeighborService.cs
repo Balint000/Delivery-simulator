@@ -17,7 +17,7 @@ public class NearestNeighborService
     /// Rendezi a rendeléseket úgy, hogy mindig a jelenlegi pozícióhoz
     /// legközelebbi következő megálló kerüljön sorra.
     /// </summary>
-    /// <param name="startNodeId">A futár induló csúcsa (általában a raktár).</param>
+    /// <param name="startNodeId">A futár induló csúcsa.</param>
     /// <param name="orders">A kézbesítendő rendelések.</param>
     public List<Order> Optimize(int startNodeId, List<Order> orders)
     {
