@@ -10,7 +10,7 @@ namespace DeliverySimulator.Services;
 /// A teljes szimuláció vezérlője;
 /// hozzárendelés-párhuzamosFutárok-összesítés
 /// </summary>
-public class SimulationOrchestrator
+public class ParallelRunner
 {
     private readonly CityGraph _graph;
     private readonly GreedyAssignmentService _greedy;
@@ -18,7 +18,7 @@ public class SimulationOrchestrator
     private readonly DeliverySimulationService _sim;
     private readonly LiveConsole _console;
 
-    public SimulationOrchestrator(
+    public ParallelRunner(
         CityGraph graph,
         GreedyAssignmentService greedy,
         NearestNeighborService nn,
