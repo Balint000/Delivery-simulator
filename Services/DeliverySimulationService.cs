@@ -50,7 +50,7 @@ public class DeliverySimulationService
         {
             // Konzol frissítése: "raktárba tart" státusz
             _console.UpdateCourier(courier.Id, courier.Name,
-                "🚗 raktárba tart", _graph.GetNode(courier.CurrentNodeId)?.Name ?? "?",
+                "[Raktárba tart]", _graph.GetNode(courier.CurrentNodeId)?.Name ?? "?",
                 warehouse.Name, courier.DeliveriesCompleted);
 
             _console.LogEvent("moving",
@@ -69,7 +69,7 @@ public class DeliverySimulationService
         order.Status = OrderStatus.InTransit;
 
         _console.UpdateCourier(courier.Id, courier.Name,
-            "📦 csomagot vesz fel", warehouse.Name,
+            "[Csomag felvétel]", warehouse.Name,
             order.Address, courier.DeliveriesCompleted);
 
         _console.LogEvent("pickup",
@@ -88,7 +88,7 @@ public class DeliverySimulationService
 
         // Konzol frissítése: "kézbesítés" státusz, ETA megjelenítése
         _console.UpdateCourier(courier.Id, courier.Name,
-            "🚚 kézbesítés", warehouse.Name,
+            "[Kézbesítés]", warehouse.Name,
             destNode?.Name ?? order.Address,
             courier.DeliveriesCompleted,
             estimatedMin: idealDel);
@@ -137,7 +137,7 @@ public class DeliverySimulationService
 
         // Futár visszaáll "vár" státuszra a következő rendelésig
         _console.UpdateCourier(courier.Id, courier.Name,
-            "⏸ vár", destNode?.Name ?? "?",
+            "[Vár]", destNode?.Name ?? "?",
             completedCount: courier.DeliveriesCompleted);
     }
 

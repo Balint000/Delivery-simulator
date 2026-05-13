@@ -34,7 +34,7 @@ public class GreedyAssignmentService
             // 3) Idő raktár -> cím
             var (_, warehouseToAddressTime) = _graph.FindShortestPath(warehouseId, order.AddressNodeId);
             // 4) Összesített idő
-            int totalTime = toWarehouseTime + warehouseToAddressTime;
+            int totalTime = toWarehouseTime + warehouseToAddressTime + courier.DeliveriesCompleted * 2; // sok rendelést kapott futárok kapnak ,,büntetést"
 
             if (totalTime == int.MaxValue) continue;
 

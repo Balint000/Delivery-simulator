@@ -13,6 +13,9 @@ public class LiveConsole
     private const int MaxEvents = 10;
     private const int MaxNotifications = 5;
 
+    // Layout szélesség (karakterben) – elég nagy 1920x1080-hoz, de nem túl széles, hogy ne tördeljen.
+    private const int LayoutWidth = 140;
+
     private int _courierPanelRow;
     private int _eventPanelRow;
     private int _notificationPanelRow;
@@ -37,6 +40,36 @@ public class LiveConsole
             _courierIndexMap = courierIndexMap;
 
             int minHeight = 24 + courierCount;
+
+            // Megpróbáljuk a lehető legnagyobbra állítani az ablakot/buffert (ahol támogatott).
+            try
+            {
+                // Cél: nagy, de nem extrém nagy ablak.
+                int desiredWidth = Math.Min(LayoutWidth, Console.LargestWindowWidth);
+                int desiredHeight = Math.Min(minHeight + MaxEvents + MaxNotifications + 10, Console.LargestWindowHeight);
+
+                if (Console.WindowWidth < desiredWidth)
+                {
+                    Console.WindowWidth = desiredWidth;
+                }
+
+                if (Console.WindowHeight < desiredHeight)
+                {
+                    Console.WindowHeight = desiredHeight;
+                }
+
+                // Buffer magasság növelése, hogy ne scrollozzon írás közben.
+                if (Console.BufferHeight < desiredHeight + 5)
+                {
+                    Console.BufferHeight = desiredHeight + 5;
+                }
+            }
+            catch
+            {
+                // Platform nem támogatja (Linux, VS Code, stb.) → csendben elengedjük.
+            }
+
+            // Ha még mindig kicsi az ablak, jelezzünk a felhasználónak.
             if (Console.WindowHeight < minHeight)
             {
                 Console.Clear();
@@ -64,8 +97,11 @@ public class LiveConsole
             Console.ResetColor();
 
             _courierPanelRow = Console.CursorTop;
+            int width = Math.Min(LayoutWidth, Console.WindowWidth - 1);
             for (int i = 0; i < courierCount; i++)
-                Console.WriteLine(new string(' ', Console.WindowWidth - 1));
+            {
+                Console.WriteLine(new string(' ', width));
+            }
             Console.WriteLine();
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -74,7 +110,9 @@ public class LiveConsole
 
             _eventPanelRow = Console.CursorTop;
             for (int i = 0; i < MaxEvents; i++)
-                Console.WriteLine(new string(' ', Console.WindowWidth - 1));
+            {
+                Console.WriteLine(new string(' ', width));
+            }
             Console.WriteLine();
 
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
@@ -83,7 +121,9 @@ public class LiveConsole
 
             _notificationPanelRow = Console.CursorTop;
             for (int i = 0; i < MaxNotifications; i++)
-                Console.WriteLine(new string(' ', Console.WindowWidth - 1));
+            {
+                Console.WriteLine(new string(' ', width));
+            }
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -120,7 +160,8 @@ public class LiveConsole
                 : Clip(location, 30);
 
             string eta = estimatedMin.HasValue ? $"~{estimatedMin}p" : "     ";
-            string line = $"  {status,-25} │ {name,-30} │ {loc,-45} │ {eta,-8} │ {completedCount} kézb.";
+            string line =
+                $"  {status,-25} │ {name,-30} │ {loc,-45} │ {eta,-8} │ {completedCount} kézb.";
 
             int row = _courierPanelRow + rowIndex;
             Overwrite(row, line);
@@ -139,16 +180,17 @@ public class LiveConsole
 
             string ts = DateTime.Now.ToString("HH:mm:ss");
 
+            // ASCII ikonok, hogy a monospace layout stabil maradjon.
             string icon = type switch
             {
-                "delivery" => "✅",
-                "delay" => "⚠️ ",
-                "moving" => "🚗",
-                "pickup" => "📦",
-                "start" => "🟢",
-                "done" => "🏁",
-                "refill" => "📥",
-                _ => "ℹ️ "
+                "delivery" => "[OK ]",
+                "delay" => "[KÉS]",
+                "moving" => "[MOZG]",
+                "pickup" => "[FELV]",
+                "start" => "[IND]",
+                "done" => "[KÉSZ]",
+                "refill" => "[REF]",
+                _ => "[INF]"
             };
 
             string line = $"  [{ts}] {icon} {message}";
@@ -156,11 +198,14 @@ public class LiveConsole
             if (_events.Count >= MaxEvents) _events.RemoveAt(0);
             _events.Add(line);
 
-            RedrawPanel(_eventPanelRow, _events, MaxEvents,
-                e => e.Contains("✅") ? ConsoleColor.Green
-                   : e.Contains("⚠️") ? ConsoleColor.Yellow
-                   : e.Contains("🏁") ? ConsoleColor.Cyan
-                   : ConsoleColor.Gray);
+            RedrawPanel(
+                _eventPanelRow,
+                _events,
+                MaxEvents,
+                e => e.Contains("[OK ]") ? ConsoleColor.Green
+                     : e.Contains("[KÉS]") ? ConsoleColor.Yellow
+                     : e.Contains("[KÉSZ]") ? ConsoleColor.Cyan
+                     : ConsoleColor.Gray);
         }
     }
 
@@ -175,12 +220,16 @@ public class LiveConsole
             if (_inputMode) return;
 
             string ts = DateTime.Now.ToString("HH:mm:ss");
-            string line = $"  [{ts}] 📬 {customer,-20} │ {orderNumber,-10} │ +{lateMinutes} perc késés várható";
+            string line =
+                $"   [{ts}] [ÉRT] {customer,-20} │ {orderNumber,-10} │ +{lateMinutes} perc késés várható";
 
             if (_notifications.Count >= MaxNotifications) _notifications.RemoveAt(0);
             _notifications.Add(line);
 
-            RedrawPanel(_notificationPanelRow, _notifications, MaxNotifications,
+            RedrawPanel(
+                _notificationPanelRow,
+                _notifications,
+                MaxNotifications,
                 _ => ConsoleColor.Magenta);
         }
     }
@@ -192,7 +241,11 @@ public class LiveConsole
         lock (_lock)
         {
             int finalRow = _notificationPanelRow + MaxNotifications + 2;
-            Console.SetCursorPosition(0, finalRow);
+            if (finalRow >= 0 && finalRow < Console.WindowHeight)
+            {
+                Console.SetCursorPosition(0, finalRow);
+            }
+
             Console.CursorVisible = true;
             Console.ResetColor();
         }
@@ -208,22 +261,24 @@ public class LiveConsole
     {
         int origRow = Console.CursorTop;
         int origCol = Console.CursorLeft;
+        int width = Math.Min(LayoutWidth, Console.WindowWidth - 1);
 
         for (int i = 0; i < maxLines; i++)
         {
             int row = panelRow + i;
             if (row < 0 || row >= Console.WindowHeight) continue;
-            Console.SetCursorPosition(0, panelRow + i);
+
+            Console.SetCursorPosition(0, row);
 
             if (i < lines.Count)
             {
                 Console.ForegroundColor = colorPicker(lines[i]);
-                Console.Write(PadRight(lines[i], Console.WindowWidth - 1));
+                Console.Write(PadRight(lines[i], width));
                 Console.ResetColor();
             }
             else
             {
-                Console.Write(new string(' ', Console.WindowWidth - 1));
+                Console.Write(new string(' ', width));
             }
         }
 
@@ -236,8 +291,10 @@ public class LiveConsole
 
         int origRow = Console.CursorTop;
         int origCol = Console.CursorLeft;
+        int width = Math.Min(LayoutWidth, Console.WindowWidth - 1);
+
         Console.SetCursorPosition(0, row);
-        Console.Write(PadRight(text, Console.WindowWidth - 1));
+        Console.Write(PadRight(text, width));
         Console.SetCursorPosition(origCol, origRow);
     }
 

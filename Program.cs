@@ -61,6 +61,23 @@ static async Task RunSimulationAsync(AppDbContext db)
     var couriers = await db.Couriers.Where(c => c.CityId == city.Id).ToListAsync();
     var orders = await db.Orders.Where(o => o.CityId == city.Id).ToListAsync();
 
+    foreach (var o in orders)
+    {
+        o.Status = OrderStatus.Pending;
+        o.AssignedCourierId = null;
+        o.IdealMinutes = null;
+        o.ActualMinutes = null;
+        o.WasLate = false;
+    }
+
+    foreach (var c in couriers)
+    {
+        c.AssignedOrderIds.Clear();
+        c.DeliveriesCompleted = 0;
+        c.LateDeliveries = 0;
+        c.TotalTimeMinutes = 0;
+    }
+
     var graph = new CityGraph(nodes, edges);
 
     PrintStep("Város", city.Name);
@@ -86,6 +103,18 @@ static async Task RunSimulationAsync(AppDbContext db)
         .ToDictionary(x => x.Id, x => x.Index);
 
     liveConsole.Init("━━━ Csomag kézbesítési szimuláció ━━━", couriers.Count, courierIndexMap);
+
+    foreach (var c in couriers)
+    {
+        var nodeName = graph.GetNode(c.CurrentNodeId)?.Name ?? "?";
+        liveConsole.UpdateCourier(
+            courierId: c.Id,
+            name: c.Name,
+            status: "[Vár]",
+            location: nodeName,
+            target: null,
+            completedCount: c.DeliveriesCompleted);
+    }
 
     using var cts = new CancellationTokenSource();
 
@@ -322,7 +351,7 @@ static async Task ShowRunDetailsAsync(AppDbContext db, SimulationRun run)
     else
     {
         Console.ForegroundColor = ConsoleColor.DarkGray;
-        Console.WriteLine($"  {"Rendelés",-12} {"Ügyfél",-25} {"Futár",-25} {"Kézb.",-7} {"Késő",-6} {"Ideális",-9} {"Tényleges"}");
+        Console.WriteLine($"  {"Rendelés",-12} {"Ügyfél",-25} {"Futár",-25} {"Kézb.",-7} {"Késő",-6}");
         Console.WriteLine($"  {"─────────────────────────────────────────────────────────────────────────────"}");
         Console.ResetColor();
 
@@ -429,4 +458,10 @@ static void PrintSummaryAndReports(SimResult result, List<Order> orders, List<Co
     Reports.PrintDelayReport(orders, couriers);
     Reports.PrintCourierReport(couriers);
     Reports.PrintZoneReport(orders, couriers);
+
+    Console.WriteLine();
+    Console.ForegroundColor = ConsoleColor.DarkGray;
+    Console.Write("  Nyomj meg egy billentyűt a visszalépéshez...");
+    Console.ResetColor();
+    Console.ReadKey(intercept: true);
 }

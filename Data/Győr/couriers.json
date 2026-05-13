@@ -51,15 +51,15 @@
   {
     "id": 8,
     "name": "Központ Katinka",
-    "currentNodeId": 19,
+    "currentNodeId": 10,
     "zoneIds": [1, 2, 3],
     "maxCapacity": 3
   },
   {
     "id": 9,
     "name": "Éjszakai Emese",
-    "currentNodeId": 6,
-    "zoneIds": [1, 2],
+    "currentNodeId": 5,
+    "zoneIds": [1, 2, 4],
     "maxCapacity": 1
   },
   {
